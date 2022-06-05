@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 
 
-from .serializers import LoginSerializer, SetProfileImageSerializer, UserSerializer
+from .serializers import LoginSerializer, SetProfileImageSerializer, UpdateProfileSerializer, UserSerializer
 from .models import User
 
 # Create your views here.
@@ -25,6 +25,23 @@ class RegisterView(generics.GenericAPIView):
         serializer.save()
         user_data = serializer.data
         return Response(user_data, status=status.HTTP_201_CREATED)
+
+
+class UserProfileAPIView(generics.GenericAPIView):
+    serializer_class = UpdateProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        user = request.user
+        serializer = self.serializer_class(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class LoginApiView(generics.GenericAPIView):

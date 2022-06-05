@@ -74,3 +74,25 @@ class SetProfileImageSerializer(serializers.ModelSerializer):
         instance.avatar = validated_data['avatar']
         instance.save()
         return instance
+
+
+# Update profile serializer
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get(
+            'first_name', instance.first_name)
+        instance.last_name = validated_data.get(
+            'last_name', instance.last_name)
+        instance.save()
+        return instance
+
+    def validate_email(self, value):
+        if value != self.instance.email:
+            if User.objects.filter(email=value).exists():
+                raise serializers.ValidationError(
+                    "Email already exists")
+        return value

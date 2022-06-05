@@ -85,10 +85,10 @@ class GetMyFollowablesUsersAPIView(generics.ListAPIView):
 
     # Find users followed by my friends or by users I follow
     def get_queryset(self):
-        return User.objects.filter(
+        return User.objects.all().exclude(
             id__in=Follow.objects.filter(
                 user=self.request.user).values_list('following', flat=True)
-        )
+        ).exclude(id=self.request.user.id)
 
 
 class FollowersForGivenUserAPIView(generics.ListAPIView):
