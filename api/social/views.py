@@ -110,7 +110,7 @@ class GetPostsByMyFollowingsUsersAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self): return Post.objects.filter(
-        user__in=Follow.objects.filter(
+        author__in=Follow.objects.filter(
             user=self.request.user).values_list('following', flat=True)
     )
 
@@ -125,3 +125,34 @@ class NewPostForLoggedUserAPIView(generics.CreateAPIView):
 class PostUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
+
+
+class PostCommentsAPIView(generics.ListCreateAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(id=self.kwargs['pk'])
+
+
+class PostCommentUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+
+class PostLikesAPIView(generics.ListCreateAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(id=self.kwargs['pk'])
+
+
+class PostLikeUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+
+class GetPostsForGivenUserAPIView(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.kwargs['pk'])
