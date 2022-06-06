@@ -89,7 +89,7 @@ const UserItem = ({user}: {user: User}) => {
           navigation.navigate('ProfileScreen' as never, {user} as never)
         }>
         <Box>
-          <Avatar source={require('../assets/Cover.jpg')} />
+          <Avatar source={{uri: u.avatar}} />
         </Box>
         <Box mx={1} flex={1}>
           <Text fontSize={17} fontWeight="bold">
@@ -102,7 +102,11 @@ const UserItem = ({user}: {user: User}) => {
         </Box>
       </TouchableOpacity>
       <Box flex={2.5}>
-        <Button isLoading={loading} onPress={handleFollow} fontWeight="bol">
+        <Button
+          isLoading={loading}
+          variant={u.followed ? 'outline' : 'solid'}
+          onPress={handleFollow}
+          fontWeight="bol">
           {u.followed ? 'Unfollow' : `Follow`}
         </Button>
       </Box>

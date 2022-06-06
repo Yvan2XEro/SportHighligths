@@ -1,39 +1,50 @@
-import {ScrollView, View} from 'native-base';
-import React from 'react';
+import {FlatList, ScrollView, View} from 'native-base';
+import React, {useEffect} from 'react';
+import {http} from '../services';
+import {Post as IPost} from '../types';
 import Post from './Post';
+import Spinner from './Spinner';
 
 const PostList = ({
   setCommentingPostId,
   commentingPostId,
-  posts,
+  url,
 }: {
   setCommentingPostId: (id: number | null) => void;
   commentingPostId: number | null;
-  posts: any[];
+  url: string;
 }) => {
+  const [posts, setPosts] = React.useState<IPost[]>([]);
+  const [fetching, setFetching] = React.useState(true);
+
+  const [nextUrl, setNextUrl] = React.useState<string | null>(url);
+  useEffect(() => {
+    fetchNextPage();
+  }, []);
+  const fetchNextPage = async () => {
+    if (nextUrl) {
+      setFetching(true);
+      http
+        .get(nextUrl)
+        .then(({data}) => {
+          setPosts(posts.concat(data.results));
+          setNextUrl(data.next);
+          setFetching(false);
+        })
+        .catch(e => {
+          console.error(e);
+          setFetching(false);
+        });
+    }
+  };
   return (
-    <ScrollView>
-      <Post
-        data={{id: 1}}
-        onFocus={() => setCommentingPostId(1)}
-        focusedPost={commentingPostId}
-      />
-      <Post
-        data={{id: 2}}
-        onFocus={() => setCommentingPostId(2)}
-        focusedPost={commentingPostId}
-      />
-      <Post
-        data={{id: 3}}
-        onFocus={() => setCommentingPostId(3)}
-        focusedPost={commentingPostId}
-      />
-      <Post
-        data={{id: 4}}
-        onFocus={() => setCommentingPostId(4)}
-        focusedPost={commentingPostId}
-      />
-    </ScrollView>
+    <FlatList
+      data={posts}
+      keyExtractor={(p, i) => i + '' + p.id}
+      onScrollEndDrag={fetchNextPage}
+      ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
+      renderItem={({item}) => <Post data={item} />}
+    />
   );
 };
 

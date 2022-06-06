@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from django.utils.timezone import timedelta
 from pathlib import Path
 
@@ -30,6 +31,10 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'medias')
+MEDIA_URL = '/medias/'
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +47,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
-    # 'rest_framework.authtoken',
+    'versatileimagefield',
     'authentication',
     'social',
 ]
@@ -137,7 +142,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 2,
+    'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),

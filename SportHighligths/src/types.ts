@@ -25,3 +25,15 @@ export type RegisterUser = {
   password: string;
   // passwordConfirmation?: string;
 }
+
+export type Post = {
+  id: number;
+  author: User;
+  content: string;
+  images: { id: number, image: string }[];
+  createdAt: Date;
+  updatedAt: Date;
+  likesCount: number;
+  liked: boolean;
+  commentsCount: number;
+}

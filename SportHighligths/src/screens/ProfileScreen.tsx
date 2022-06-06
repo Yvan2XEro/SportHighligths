@@ -34,7 +34,7 @@ const ProfileScreen = () => {
               <PostList
                 commentingPostId={commentingPostId}
                 setCommentingPostId={id => setCommentingPostId(id)}
-                posts={[]}
+                url={`/users/${user.id}/posts`}
               />
               {commentingPostId !== null && (
                 <FloatingInput

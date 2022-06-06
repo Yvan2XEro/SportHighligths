@@ -1,9 +1,13 @@
+import pdb
 from rest_framework.response import Response
 from rest_framework import generics, status
 
+from rest_framework.parsers import MultiPartParser
+
+
 from authentication.models import User
 from authentication.serializers import UserSerializer
-from .serializers import FollowSerializer, PostSerializer
+from .serializers import FollowSerializer, NewPostSerialiser, PostSerializer
 from .models import Follow, Post
 
 
@@ -99,7 +103,6 @@ class FollowersForGivenUserAPIView(generics.ListAPIView):
 
 
 class FollowingsForGivenUserAPIView(generics.ListAPIView):
-
     serializer_class = FollowSerializer
 
     def get_queryset(self):
@@ -108,17 +111,21 @@ class FollowingsForGivenUserAPIView(generics.ListAPIView):
 
 class GetPostsByMyFollowingsUsersAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
-
-    def get_queryset(self): return Post.objects.filter(
-        author__in=Follow.objects.filter(
-            user=self.request.user).values_list('following', flat=True)
-    )
+    queryset = Post.objects.all()
+    # def get_queryset(self):
+    #     return Post.objects.filter(
+    #         author__in=Follow.objects.filter(
+    #             user=self.request.user).values_list('following', flat=True)
+    #     )
 
 
 class NewPostForLoggedUserAPIView(generics.CreateAPIView):
-    serializer_class = PostSerializer
+    serializer_class = NewPostSerialiser
+
+    parser_classes = [MultiPartParser]
 
     def perform_create(self, serializer):
+        # pdb.set_trace()
         serializer.save(author=self.request.user)
 
 

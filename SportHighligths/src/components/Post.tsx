@@ -3,6 +3,7 @@ import {Avatar, Box, Icon, Image, Row, Text} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
+import {Post as IPost} from '../types';
 
 const image =
   'https://cdn.pixabay.com/photo/2020/04/30/09/18/man-5112054__340.jpg';
@@ -12,31 +13,19 @@ const Post = ({
   onFocus,
   focusedPost,
 }: {
-  data: {id: number};
+  data: IPost;
   onFocus?: () => void;
   focusedPost?: number | null;
 }) => {
   const navigation = useNavigation();
   const [img, setImg] = useState('../assets/abou.jpg');
-  useEffect(() => {
-    setImg(randomAssetImage());
-  }, []);
-  function randomAssetImage() {
-    const images = [
-      '../assets/abou.jpg',
-      '../assets/Cover.jpg',
-      '../assets/moumi.jpg',
-      '../assets/song.jpeg',
-    ];
-    return images[Math.floor(Math.random() * images.length)];
-  }
   return (
     <Box my={2}>
       <Row justifyContent="space-between">
         <Row alignContent="center">
-          <Avatar source={{uri: image}} size={45} />
+          <Avatar source={{uri: data.author.avatar}} size={45} />
           <Text color="primary.500" ml={3} fontSize={18} fontWeight="bold">
-            Jeanne Pauline
+            {data.author.firstName} {data.author.lastName}
           </Text>
         </Row>
         <Text>2 min ago</Text>
@@ -44,7 +33,8 @@ const Post = ({
       <Box>Les lions indomptables du Cameroun! 😀</Box>
       <Box mt={1}>
         <Image
-          source={require('../assets/moumi.jpg')}
+          // source={require('../assets/moumi.jpg')}
+          source={{uri: data.images[0]?.image}}
           alt="Publication"
           width="100%"
           height={400}

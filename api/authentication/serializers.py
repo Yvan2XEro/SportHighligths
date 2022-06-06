@@ -1,3 +1,4 @@
+import pdb
 from rest_framework import serializers
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
@@ -79,7 +80,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class SetProfileImageSerializer(serializers.ModelSerializer):
     avatar = VersatileImageFieldSerializer(
-        sizes='avatar', read_only=True
+        sizes='avatar'
     )
 
     class Meta:
@@ -88,6 +89,7 @@ class SetProfileImageSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         # Get the name of the image associated to user
+        # pdb.set_trace()
         el = instance.avatar.name.split('/')
         image_name = el[len(el)-1]
 

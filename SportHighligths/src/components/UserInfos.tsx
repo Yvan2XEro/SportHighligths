@@ -31,7 +31,7 @@ const UserInfos = ({
           <Box>
             <Text
               color="white"
-              fontSize={18}
+              fontSize="2xl"
               fontWeight="bold"
               textAlign="center">
               {numConverter(data?.publicationsCount)}
@@ -45,7 +45,7 @@ const UserInfos = ({
           <Box>
             <Text
               color="white"
-              fontSize={18}
+              fontSize="2xl"
               fontWeight="bold"
               textAlign="center">
               {numConverter(data?.followersCount)}
@@ -59,7 +59,7 @@ const UserInfos = ({
           <Box>
             <Text
               color="white"
-              fontSize={18}
+              fontSize="2xl"
               fontWeight="bold"
               textAlign="center">
               {numConverter(data?.followingsCount)}

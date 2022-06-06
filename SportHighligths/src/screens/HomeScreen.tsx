@@ -22,7 +22,7 @@ const HomeScreen = ({navigation}: any) => {
         <PostList
           commentingPostId={commentingPostId}
           setCommentingPostId={setCommentingPostId}
-          posts={[]}
+          url="/posts"
         />
         {commentingPostId !== null && (
           <FloatingInput
