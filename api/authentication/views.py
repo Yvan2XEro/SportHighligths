@@ -12,29 +12,33 @@ from .models import User
 
 
 class ListUsers(generics.ListAPIView):
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all().exclude(id=self.request.user.id)
 
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(
+            data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         user_data = serializer.data
+
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
 class UserProfileAPIView(generics.GenericAPIView):
     serializer_class = UpdateProfileSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        serializer = self.serializer_class(user)
-        return Response(serializer.data)
+        serializer = UserSerializer(user, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
         user = request.user

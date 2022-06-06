@@ -10,15 +10,16 @@ import PostList from '../components/PostList';
 import UsersList from '../components/UsersList';
 import FloatingInput from '../components/FloatingInput';
 import {paperTheme, tabsTheme} from '../themes';
+import {User} from '../types';
 
 const ProfileScreen = () => {
-  const {id} = useRoute().params as any;
+  const {user} = useRoute().params as {user: User};
   const [commentingPostId, setCommentingPostId] = useState<number | null>(null);
   return (
     <View flex={1}>
-      <Header />
+      <Header user={user} />
       <Box bgColor="primary.500" px={2} py={1}>
-        <UserInfos />
+        <UserInfos data={user} />
       </Box>
       <Box flex={1}>
         <Tabs
@@ -44,7 +45,7 @@ const ProfileScreen = () => {
             </>
           </TabScreen>
           <TabScreen label="Abonnnees">
-            <UsersList users={[]} />
+            <UsersList url={`/users/${user.id}/followers`} />
           </TabScreen>
         </Tabs>
       </Box>
@@ -54,7 +55,7 @@ const ProfileScreen = () => {
 
 export default ProfileScreen;
 
-export const Header = () => {
+export const Header = ({user}: {user: User}) => {
   const navigation = useNavigation();
   return (
     <Box
@@ -72,7 +73,7 @@ export const Header = () => {
           />
         </TouchableOpacity>
         <Text fontSize="2xl" color="white">
-          Jean robert
+          {user.firstName} {user.lastName}
         </Text>
       </Row>
       <TouchableOpacity>

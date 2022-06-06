@@ -1,13 +1,17 @@
 import {Avatar, Box, Row, Text} from 'native-base';
 import React from 'react';
+import {numConverter} from '../services';
+import {User} from '../types';
 
 const UserInfos = ({
   showSubsCount = true,
   showPubsCount = true,
+  data,
   showEmitedSubsCount = true,
 }: {
   showSubsCount?: boolean | undefined;
   showPubsCount?: boolean | undefined;
+  data: User;
   showEmitedSubsCount?: boolean | undefined;
 }) => {
   return (
@@ -30,9 +34,11 @@ const UserInfos = ({
               fontSize={18}
               fontWeight="bold"
               textAlign="center">
-              12M
+              {numConverter(data?.publicationsCount)}
             </Text>
-            <Text color="white">Publications</Text>
+            <Text color="white">
+              {data?.publicationsCount !== 1 ? 'Publications' : 'Publication'}
+            </Text>
           </Box>
         )}
         {showSubsCount && (
@@ -42,9 +48,11 @@ const UserInfos = ({
               fontSize={18}
               fontWeight="bold"
               textAlign="center">
-              1.7k
+              {numConverter(data?.followersCount)}
             </Text>
-            <Text color="white">Abonnes</Text>
+            <Text color="white">
+              {data?.followersCount !== 1 ? 'Abonnés' : 'Abonné'}
+            </Text>
           </Box>
         )}
         {showEmitedSubsCount && (
@@ -54,9 +62,11 @@ const UserInfos = ({
               fontSize={18}
               fontWeight="bold"
               textAlign="center">
-              897
+              {numConverter(data?.followingsCount)}
             </Text>
-            <Text color="white">Abonnement</Text>
+            <Text color="white">
+              {data?.followingsCount !== 1 ? 'Abonnements' : 'Abonnement'}
+            </Text>
           </Box>
         )}
       </Row>

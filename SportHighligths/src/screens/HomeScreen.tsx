@@ -58,7 +58,7 @@ const Header = ({navigation}: any) => {
   );
 };
 
-const ANIMATION_DURATION = 100;
+const ANIMATION_DURATION = 200;
 
 export const SearchInput = ({
   onCloseSearching,
@@ -106,11 +106,13 @@ export const SearchInput = ({
           style={{flex: 0.1, marginLeft: 'auto'}}
           onPress={() => {
             inputRef.current.blur();
-            searchInputRef.current
-              .slideOutLeft(ANIMATION_DURATION)
-              .finally(() => {
+            searchInputRef.current.slideOutLeft(ANIMATION_DURATION);
+            setTimeout(
+              () => {
                 onCloseSearching();
-              });
+              } /* onCloseSearching() */,
+              ANIMATION_DURATION - 100,
+            );
           }}>
           <Icon
             color="primary.500"

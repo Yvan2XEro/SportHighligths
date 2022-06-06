@@ -1,19 +1,31 @@
 import {Box, Icon, Row, ScrollView, Text, View} from 'native-base';
-import React from 'react';
+import React, {useContext} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import UserInfos from './UserInfos';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {AuthContext} from '../contexts/AuthContextProvider';
+import {Alert} from 'react-native';
+import {User} from '../types';
 
 const DrawerContent = ({navigation}: {navigation: any}) => {
+  const {logout, user} = useContext(AuthContext) as {
+    logout: () => void;
+    user: User;
+  };
   return (
     <View flex={1}>
-      <Box py={6} bgColor="primary.500" flex={0.25}>
+      <Box position="relative" py={10} bgColor="primary.500" flex={0.25}>
         <Box mx={2}>
-          <UserInfos showPubsCount={false} />
+          <UserInfos showPubsCount={false} data={user} />
+          <Text textAlign="center" fontWeight="700" color="white" fontSize="md">
+            {user?.firstName} {user?.lastName}
+          </Text>
         </Box>
       </Box>
+      <Text textAlign="center" color="primary.500">
+        {user?.email}
+      </Text>
       <ScrollView px={3} mt={6}>
         <CustomDrawerItem
           label="Acceuil"
@@ -32,7 +44,7 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
           label="Mon compte"
           icon={<MaterialIcons name="account-circle" />}
         />
-        <CustomDrawerItem
+        {/* <CustomDrawerItem
           label="Se connecter"
           icon={<MaterialIcons name="login" />}
           onpress={() =>
@@ -40,8 +52,8 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
               screen: 'LoginScreen',
             })
           }
-        />
-        <CustomDrawerItem
+        /> */}
+        {/* <CustomDrawerItem
           label="Creer un compte"
           icon={<FontAwesome5 name="user-plus" />}
           onpress={() =>
@@ -49,7 +61,7 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
               screen: 'RegisterScreen',
             })
           }
-        />
+        /> */}
         <CustomDrawerItem
           label="Parametres"
           icon={<Ionicons name="md-settings-outline" />}
@@ -57,7 +69,26 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
       </ScrollView>
       <Box px={3} flex={0.1} justifyContent="space-between">
         <TouchableOpacity
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={() => {
+            Alert.alert(
+              'ATTENTION!',
+              'Vous allez vous deconnecter!',
+              [
+                {
+                  text: 'Annuler',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Confirmer',
+                  onPress: () => {
+                    logout();
+                  },
+                },
+              ],
+              {cancelable: false},
+            );
+          }}>
           <Text>Logout</Text>
           <Icon as={<MaterialIcons name="chevron-right" />} size={8} />
         </TouchableOpacity>
@@ -81,7 +112,7 @@ const CustomDrawerItem = ({
     <TouchableOpacity style={{marginBottom: 8}} onPress={onpress}>
       <Row justifyContent="space-between">
         <Row flex={8}>
-          <Icon flex={2} as={icon} size={7} />
+          <Icon color="primary.500" flex={2} as={icon} size={7} />
           <Text flex={8} ml={2} fontWeight="bold">
             {label}
           </Text>

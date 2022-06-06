@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Box, Button, Icon, Pressable, Row, Text} from 'native-base';
 import {TextInput} from './LoginScreen';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -6,8 +6,41 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native';
+import {AuthContext} from '../contexts/AuthContextProvider';
+import {isValidEmail} from '../services';
+import Alert from '../components/Alert';
 
 const RegisterScreen = ({navigation}: any) => {
+  const {register} = useContext(AuthContext);
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [securePassword, setSecurePassword] = React.useState(true);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [alertError, setAlertError] = React.useState('');
+  const submit = React.useCallback(async () => {
+    if (
+      firstName.length > 0 &&
+      lastName.length > 0 &&
+      isValidEmail(email) &&
+      password.length > 6
+    ) {
+      setSubmitting(true);
+      setAlertError('');
+      try {
+        await register({firstName, lastName, email, password});
+      } catch (e: any) {
+        console.error(e);
+        if (e.response && e.response.status === 401) {
+          setAlertError('Identifiants incorrects');
+        }
+      }
+      setSubmitting(false);
+    } else {
+      setAlertError('Veillez entrer conformement tous les champs!');
+    }
+  }, [firstName, lastName, email, password]);
   return (
     <>
       <Box px={10} flex={0.1}>
@@ -21,21 +54,70 @@ const RegisterScreen = ({navigation}: any) => {
         </Text>
       </Box>
       <Box px={10} flex={0.8} justifyContent="center">
-        <TextInput label="Name" icon={<Ionicons name="person-outline" />} />
-        <TextInput label="Email" icon={<Fontisto name="email" />} />
+        {alertError.length > 0 && (
+          <Alert
+            status="error"
+            onClose={() => setAlertError('')}
+            text={alertError}
+          />
+        )}
         <TextInput
-          label="Password"
+          label="Nom"
+          icon={<Ionicons name="person-outline" />}
+          value={lastName}
+          onChangeText={text => setLastName(text)}
+          error={
+            lastName.length > 0 && lastName.length < 3
+              ? 'Le nom doit contenir au moins 3 caractères!'
+              : undefined
+          }
+        />
+        <TextInput
+          label="Prenom"
+          icon={<Ionicons name="person-outline" />}
+          value={firstName}
+          onChangeText={text => setFirstName(text)}
+          error={
+            firstName.length > 0 && firstName.length < 3
+              ? 'Le prenom doit contenir au moins 3 caractères!'
+              : undefined
+          }
+        />
+        <TextInput
+          label="Email"
+          icon={<Fontisto name="email" />}
+          value={email}
+          onChangeText={text => setEmail(text)}
+          error={
+            email.length > 0 && !isValidEmail(email)
+              ? 'Adresse email invalide!'
+              : undefined
+          }
+        />
+        <TextInput
+          label="Mot de passe"
           icon={<MaterialCommunityIcons name="lock-outline" />}
+          value={password}
+          onChangeText={text => setPassword(text)}
+          secureTextEntry={securePassword}
           right={
-            <Pressable>
-              <Icon size={5} as={<Ionicons name="eye-outline" />} />
+            <Pressable onPress={() => setSecurePassword(v => !v)}>
+              <Icon
+                size={5}
+                as={
+                  <Ionicons
+                    name={securePassword ? 'eye-outline' : 'eye-off-outline'}
+                  />
+                }
+              />
             </Pressable>
           }
         />
         <Box mt={2}>
           <Row alignItems="center" justifyContent="space-between">
-            <Button>PROCEDER</Button>
-            <Box ml={2}>{/* <Text>Mot de passe oublie?</Text> */}</Box>
+            <Button isLoading={submitting} onPress={submit} minW={100}>
+              PROCEDER
+            </Button>
           </Row>
         </Box>
       </Box>
