@@ -1,17 +1,7 @@
 import {Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  Alert,
-  Box,
-  Checkbox,
-  FlatList,
-  Icon,
-  Image,
-  Input,
-  Row,
-  Text,
-} from 'native-base';
+import {Alert, Box, FlatList, Icon, Image, Input, Row, Text} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -19,11 +9,13 @@ import Video from 'react-native-video';
 import {MediaPickable} from '../types';
 
 const NewPostScreen = () => {
+  const [medias, setMedias] = React.useState<MediaPickable[]>([]);
+
   const navigation = useNavigation();
   return (
     <Box>
       <Header navigation={navigation} />
-      <ImgPickerWrapper />
+      <ImgPickerWrapper medias={medias} setMedias={setMedias} />
     </Box>
   );
 };
@@ -32,7 +24,7 @@ export default NewPostScreen;
 
 export const Header = ({navigation}: {navigation: NavigationProp<any>}) => {
   return (
-    <Row bgColor="primary.500" px={0.5} py={1} alignItems="center">
+    <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icon
           color="white"
@@ -46,14 +38,9 @@ export const Header = ({navigation}: {navigation: NavigationProp<any>}) => {
         </Text>
       </Box>
       <TouchableOpacity style={{marginLeft: 'auto'}}>
-        <Row alignItems="center">
-          <Text color="white">Publier</Text>
-          <Icon
-            color="white"
-            as={<MaterialIcons name="chevron-right" />}
-            size={8}
-          />
-        </Row>
+        <Text color="white" textTransform="uppercase" fontWeight="bold">
+          Publier
+        </Text>
       </TouchableOpacity>
     </Row>
   );
@@ -77,7 +64,13 @@ const styles = StyleSheet.create({
   },
 });
 const IMAGE_SIZE = Dimensions.get('window').width / 4;
-const ImgPickerWrapper = () => {
+const ImgPickerWrapper = ({
+  medias,
+  setMedias,
+}: {
+  medias: MediaPickable[];
+  setMedias: (i: MediaPickable[]) => void;
+}) => {
   const cleanupImages = useCallback(() => {
     ImagePicker.clean()
       .then(() => {
@@ -99,13 +92,21 @@ const ImgPickerWrapper = () => {
         mediaType,
       })
         .then((image: any) => {
-          setMedias([...medias, {uri: image.path, mime: image.mime}]);
+          return setMedias(
+            medias.concat([
+              {
+                uri: image.path,
+                mime: image.mime,
+                name: image.name,
+              },
+            ]),
+          );
         })
         .catch((e: any) => {
           Alert(e);
         });
     },
-    [ImagePicker, cleanupImages],
+    [ImagePicker],
   );
   const pickExistingMedias = useCallback(
     (mediaType: 'video' | 'photo', cropping: boolean) => {
@@ -118,38 +119,48 @@ const ImgPickerWrapper = () => {
         forceJpg: true,
         mediaType,
       }).then((pickedMideias: any) => {
-        setMedias([
-          ...medias,
-          ...pickedMideias.map((m: any) => ({uri: m.path, mime: m.mime})),
-        ]);
+        setMedias(
+          medias.concat(
+            pickedMideias.map((m: any) => ({uri: m.path, mime: m.mime})),
+          ),
+        );
       });
     },
-    [ImagePicker, cleanupImages],
+    [ImagePicker],
   );
-  const [medias, setMedias] = React.useState<MediaPickable[]>([]);
+
+  useEffect(() => {
+    console.log(medias);
+  }, [medias]);
   return (
     <Box>
       <Row ml="auto" justifyContent="space-between">
-        <TouchableOpacity
-          style={{marginRight: 7}}
-          onPress={() => pickMediaWithCamera('photo', false)}>
-          <Icon as={<MaterialCommunityIcons name="camera" />} size={8} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{marginRight: 7}}
-          onPress={() => pickExistingMedias('photo', false)}>
-          <Icon as={<MaterialCommunityIcons name="image" />} size={8} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{marginRight: 7}}
-          onPress={() => pickMediaWithCamera('video', false)}>
-          <Icon as={<MaterialCommunityIcons name="video" />} size={8} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{marginRight: 7}}
-          onPress={() => pickExistingMedias('video', false)}>
-          <Icon as={<MaterialIcons name="video-collection" />} size={8} />
-        </TouchableOpacity>
+        {medias.length <= 0 ? (
+          <>
+            <TouchableOpacity
+              style={{marginRight: 7}}
+              onPress={() => pickMediaWithCamera('photo', false)}>
+              <Icon as={<MaterialCommunityIcons name="camera" />} size={8} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginRight: 7}}
+              onPress={() => pickExistingMedias('photo', false)}>
+              <Icon as={<MaterialCommunityIcons name="image" />} size={8} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity
+            style={{marginRight: 7}}
+            onPress={() => {
+              cleanupImages();
+              setMedias([]);
+            }}>
+            <Icon
+              as={<MaterialCommunityIcons name="notification-clear-all" />}
+              size={8}
+            />
+          </TouchableOpacity>
+        )}
       </Row>
       <Box borderWidth={0.3} borderRadius={5} m={2}>
         <Input

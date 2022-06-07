@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Avatar, Box, Icon, Image, Row, Text} from 'native-base';
+import React, {memo, useCallback, useEffect, useState} from 'react';
+import {Avatar, Box, Icon, Image, Pressable, Row, Text} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
 import {Post as IPost} from '../types';
+import {http} from '../services';
 
 const image =
   'https://cdn.pixabay.com/photo/2020/04/30/09/18/man-5112054__340.jpg';
@@ -18,41 +19,54 @@ const Post = ({
   focusedPost?: number | null;
 }) => {
   const navigation = useNavigation();
-  const [img, setImg] = useState('../assets/abou.jpg');
+  const [post, setPost] = useState<IPost>(data);
+  const handleLike = useCallback(async () => {
+    if (!post.liked)
+      http.post(`/posts/${post.id}/like`).then(res => {
+        setPost({...post, liked: true, likesCount: post.likesCount + 1});
+      });
+    else
+      http.delete(`/posts/${post.id}/like`).then(res => {
+        setPost({...post, liked: false, likesCount: post.likesCount - 1});
+      });
+  }, [post]);
   return (
     <Box my={2}>
       <Row justifyContent="space-between">
         <Row alignContent="center">
-          <Avatar source={{uri: data.author.avatar}} size={45} />
+          <Avatar source={{uri: post.author.avatar}} size={45} />
           <Text color="primary.500" ml={3} fontSize={18} fontWeight="bold">
-            {data.author.firstName} {data.author.lastName}
+            {post.author.firstName} {post.author.lastName}
           </Text>
         </Row>
         <Text>2 min ago</Text>
       </Row>
-      <Box>Les lions indomptables du Cameroun! 😀</Box>
+      <Box>{post.content}</Box>
       <Box mt={1}>
         <Image
-          // source={require('../assets/moumi.jpg')}
-          source={{uri: data.images[0]?.image}}
+          source={{uri: post.images[0]?.image}}
           alt="Publication"
           width="100%"
           height={400}
         />
       </Box>
       <Box mt={2} flexDirection="row">
-        <Box flexDirection="row" alignItems="center">
-          <Icon color="primary.500" size={6} as={<Ionicons name="heart" />} />
+        <Pressable onPress={handleLike} flexDirection="row" alignItems="center">
+          <Icon
+            color="primary.500"
+            size={6}
+            as={<Ionicons name={post.liked ? 'heart' : 'heart-outline'} />}
+          />
           <Text color="primary.500" ml={1}>
-            12
+            {post.likesCount}
           </Text>
-        </Box>
+        </Pressable>
         <Box ml={4}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate(
                 'ViewPostScreen' as never,
-                {id: data.id} as never,
+                {id: post.id} as never,
               )
             }
             style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -62,11 +76,11 @@ const Post = ({
               as={<Ionicons name="chatbubble-outline" />}
             />
             <Text color="primary.500" ml={1}>
-              12
+              {post.commentsCount}
             </Text>
           </TouchableOpacity>
         </Box>
-        <Box ml={4} flexDirection="row" alignItems="center">
+        {/* <Box ml={4} flexDirection="row" alignItems="center">
           <Icon
             color="primary.500"
             size={6}
@@ -75,9 +89,9 @@ const Post = ({
           <Text color="primary.500" ml={1}>
             12
           </Text>
-        </Box>
+        </Box> */}
       </Box>
-      {focusedPost !== data.id && (
+      {focusedPost !== post.id && (
         <Box
           flexDirection="row"
           borderWidth={0.3}

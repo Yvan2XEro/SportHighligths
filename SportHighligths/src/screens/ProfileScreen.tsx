@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Box, Icon, Row, Text, View} from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TouchableOpacity} from 'react-native';
@@ -11,44 +11,82 @@ import UsersList from '../components/UsersList';
 import FloatingInput from '../components/FloatingInput';
 import {paperTheme, tabsTheme} from '../themes';
 import {User} from '../types';
+import {http} from '../services';
+import Spinner from '../components/Spinner';
 
 const ProfileScreen = () => {
   const {user} = useRoute().params as {user: User};
+  const [loading, setLoading] = useState<boolean>(false);
   const [commentingPostId, setCommentingPostId] = useState<number | null>(null);
+  const [u, setU] = useState<User>(user);
+  useEffect(() => {
+    setLoading(true);
+    (async () => {
+      http
+        .get(`/users/${user.id}`)
+        .then(res => {
+          setU(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setLoading(false);
+        });
+    })();
+  }, []);
   return (
     <View flex={1}>
       <Header user={user} />
       <Box bgColor="primary.500" px={2} py={1}>
-        <UserInfos data={user} />
+        <UserInfos data={u} />
       </Box>
-      <Box flex={1}>
-        <Tabs
-          style={{
-            backgroundColor: paperTheme.colors.primary[500],
-            paddingTop: 5,
-          }}
-          theme={tabsTheme}
-          showLeadingSpace={true}>
-          <TabScreen label="Publications">
-            <>
-              <PostList
-                commentingPostId={commentingPostId}
-                setCommentingPostId={id => setCommentingPostId(id)}
-                url={`/users/${user.id}/posts`}
-              />
-              {commentingPostId !== null && (
-                <FloatingInput
-                  postId={commentingPostId}
-                  onBlur={() => setCommentingPostId(null)}
+      {!loading ? (
+        <Box flex={1}>
+          <Tabs
+            style={{
+              backgroundColor: paperTheme.colors.primary[500],
+              paddingTop: 5,
+            }}
+            theme={tabsTheme}
+            uppercase={false}
+            showLeadingSpace={true}>
+            <TabScreen label="Publications">
+              <>
+                <PostList
+                  commentingPostId={commentingPostId}
+                  setCommentingPostId={id => setCommentingPostId(id)}
+                  emptyText="Aucune publication pour cet utilisateur!"
+                  url={`/users/${user.id}/posts`}
                 />
-              )}
-            </>
-          </TabScreen>
-          <TabScreen label="Abonnnees">
-            <UsersList url={`/users/${user.id}/followers`} />
-          </TabScreen>
-        </Tabs>
-      </Box>
+                {commentingPostId !== null && (
+                  <FloatingInput
+                    postId={commentingPostId}
+                    onBlur={() => setCommentingPostId(null)}
+                  />
+                )}
+              </>
+            </TabScreen>
+            <TabScreen label="Abonnnees">
+              <Box mt={1} mx={2}>
+                <UsersList
+                  url={`/users/${user.id}/followers`}
+                  emptyText={`Cet utilisateur n'est pas encore suivi par quelqu'un!`}
+                />
+              </Box>
+            </TabScreen>
+            <TabScreen label="Abonnnements">
+              <Box mt={1} mx={2}>
+                <UsersList
+                  url={`/users/${user.id}/followings`}
+                  emptyText={`Cet utilisateur ne suit personne actuellement!`}
+                />
+              </Box>
+            </TabScreen>
+          </Tabs>
+        </Box>
+      ) : (
+        <Spinner />
+      )}
     </View>
   );
 };

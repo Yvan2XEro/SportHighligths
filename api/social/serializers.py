@@ -2,7 +2,7 @@ import pdb
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
-from .models import Follow, Like, Post, PostImage
+from .models import Comment, Follow, Like, Post, PostImage
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -67,3 +67,28 @@ class PostSerializer(serializers.ModelSerializer):
         if self.context['request'].user.is_authenticated:
             return Like.objects.filter(post=obj, user=self.context['request'].user).exists()
         return False
+
+
+class CommentsSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+
+class NewCommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    post = PostSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = '__all__'

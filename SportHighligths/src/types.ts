@@ -1,6 +1,7 @@
 export type MediaPickable = {
   uri: string;
   mime: string;
+  name: string
   width?: number;
   height?: number;
 };

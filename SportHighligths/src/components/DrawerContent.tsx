@@ -82,6 +82,7 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
                 {
                   text: 'Confirmer',
                   onPress: () => {
+                    navigation.closeDrawer();
                     logout();
                   },
                 },

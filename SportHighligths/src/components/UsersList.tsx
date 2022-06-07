@@ -1,13 +1,14 @@
 import {TouchableOpacity} from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {memo, useCallback, useContext, useEffect} from 'react';
 import {Avatar, Box, Button, FlatList, Row, Text} from 'native-base';
 import {useNavigation} from '@react-navigation/native';
 import {User} from '../types';
 import {http, numConverter} from '../services';
 import Spinner from './Spinner';
 import Alert from './Alert';
+import {AuthContext} from '../contexts/AuthContextProvider';
 
-const UsersList = ({url}: {url: string}) => {
+const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [fetching, setFetching] = React.useState(true);
   const [users, setUsers] = React.useState<User[]>([]);
   const [nextUrl, setNextUrl] = React.useState<string | null>(url);
@@ -35,7 +36,7 @@ const UsersList = ({url}: {url: string}) => {
     <>
       {!fetching && users.length === 0 && (
         <Box m={3}>
-          <Alert status="warning" text={`Pas d' élement!`} />
+          <Alert status="warning" text={emptyText} />
         </Box>
       )}
       <FlatList
@@ -55,6 +56,7 @@ const UserItem = ({user}: {user: User}) => {
   const [loading, setLoading] = React.useState(false);
   const [u, setU] = React.useState<User>({...user});
   const navigation = useNavigation();
+  const {user: loggedUser} = useContext(AuthContext);
   const handleFollow = useCallback(async () => {
     setLoading(true);
     if (!u.followed) {
@@ -62,7 +64,7 @@ const UserItem = ({user}: {user: User}) => {
         .post(`/follow-user/${u.id}`)
         .then(() => {
           setLoading(false);
-          setU({...u, followed: true});
+          setU({...u, followed: true, followersCount: u.followersCount + 1});
         })
         .catch(e => {
           console.error(e);
@@ -73,7 +75,7 @@ const UserItem = ({user}: {user: User}) => {
         .delete(`/follow-user/${u.id}`)
         .then(() => {
           setLoading(false);
-          setU({...u, followed: false});
+          setU({...u, followed: false, followersCount: u.followersCount - 1});
         })
         .catch(e => {
           console.error(e);
@@ -93,7 +95,7 @@ const UserItem = ({user}: {user: User}) => {
         </Box>
         <Box mx={1} flex={1}>
           <Text fontSize={17} fontWeight="bold">
-            {u.firstName} {u.lastName}
+            {u.firstName} {u.lastName} {user.id === loggedUser.id && ' (vous)'}
           </Text>
           <Text flexShrink={1}>
             Suivi par {numConverter(u.followersCount)} personnes(2 amis en
@@ -102,13 +104,15 @@ const UserItem = ({user}: {user: User}) => {
         </Box>
       </TouchableOpacity>
       <Box flex={2.5}>
-        <Button
-          isLoading={loading}
-          variant={u.followed ? 'outline' : 'solid'}
-          onPress={handleFollow}
-          fontWeight="bol">
-          {u.followed ? 'Unfollow' : `Follow`}
-        </Button>
+        {user.id !== loggedUser.id && (
+          <Button
+            isLoading={loading}
+            variant={u.followed ? 'outline' : 'solid'}
+            onPress={handleFollow}
+            fontWeight="bol">
+            {u.followed ? 'Unfollow' : `Follow`}
+          </Button>
+        )}
       </Box>
     </Row>
   );

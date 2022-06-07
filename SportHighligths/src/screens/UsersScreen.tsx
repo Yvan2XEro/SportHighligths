@@ -11,7 +11,10 @@ const UsersScreen = () => {
     <Box>
       <Header />
       <Box mx={2} mt={1}>
-        <UsersList url={INIT_URL} />
+        <UsersList
+          url={INIT_URL}
+          emptyText="Aucun utilisateur pour le moment"
+        />
       </Box>
     </Box>
   );
