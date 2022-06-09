@@ -5,4 +5,4 @@ export const isValidEmail = (email: string) => {
 }
 
 
-export { numConverter } from './utils';
+export { numConverter, formatDate } from './utils';

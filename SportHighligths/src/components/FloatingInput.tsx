@@ -1,16 +1,40 @@
-import {Box, Icon, Input} from 'native-base';
+import {Box, Button, Icon, Input} from 'native-base';
 import * as React from 'react';
-import {TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import {http} from '../services';
+
 const FloatingInput = ({
   postId,
   onBlur,
+  onComment,
 }: {
   postId: number | null;
   onBlur: () => void;
+  onComment: () => void;
 }) => {
   const InputRef = React.useRef<any>(null);
-
+  const [value, setValue] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const handleComment = React.useCallback(async () => {
+    if (value.length > 0) {
+      setLoading(true);
+      await http
+        .post(`/posts/${postId}/new-comment`, {
+          content: value,
+        })
+        .then(() => {
+          setValue('');
+          setLoading(false);
+          onBlur();
+          setValue('');
+          onComment();
+        })
+        .catch(e => {
+          console.log(e.response.data);
+          setLoading(false);
+        });
+    }
+  }, [value, postId]);
   return (
     <Box
       position="absolute"
@@ -22,14 +46,21 @@ const FloatingInput = ({
       flexDirection="row">
       <Input
         backgroundColor="white"
+        value={value}
+        onChangeText={setValue}
         ref={InputRef}
         onBlur={onBlur}
         flex={0.9}
         autoFocus
       />
-      <TouchableOpacity style={{flex: 0.12}}>
+      <Button
+        flex={0.12}
+        onPress={handleComment}
+        isLoading={loading}
+        variant="unstyled"
+        p={0}>
         <Icon color="primary.500" as={<Feather name="send" />} size={10} />
-      </TouchableOpacity>
+      </Button>
     </Box>
   );
 };

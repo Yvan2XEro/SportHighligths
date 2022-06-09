@@ -153,7 +153,7 @@ class PostCommentsAPIView(generics.ListAPIView):
     serializer_class = CommentsSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(post=self.kwargs['pk'])
+        return Comment.objects.filter(post=self.kwargs['pk']).order_by('-created_at')
 
 
 # new comment for a post

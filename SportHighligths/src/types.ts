@@ -38,3 +38,12 @@ export type Post = {
   liked: boolean;
   commentsCount: number;
 }
+
+export type Comment = {
+  id: number;
+  author: User;
+  post: Post;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

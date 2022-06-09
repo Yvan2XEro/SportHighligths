@@ -1,13 +1,10 @@
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Avatar, Box, Icon, Image, Pressable, Row, Text} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
 import {Post as IPost} from '../types';
-import {http} from '../services';
-
-const image =
-  'https://cdn.pixabay.com/photo/2020/04/30/09/18/man-5112054__340.jpg';
+import {formatDate, http} from '../services';
 
 const Post = ({
   data,
@@ -39,16 +36,18 @@ const Post = ({
             {post.author.firstName} {post.author.lastName}
           </Text>
         </Row>
-        <Text>2 min ago</Text>
+        <Text>{formatDate(post.createdAt)}</Text>
       </Row>
       <Box>{post.content}</Box>
       <Box mt={1}>
-        <Image
-          source={{uri: post.images[0]?.image}}
-          alt="Publication"
-          width="100%"
-          height={400}
-        />
+        {
+          <Image
+            source={{uri: post.images[0]?.image}}
+            alt="Publication"
+            width="100%"
+            height={400}
+          />
+        }
       </Box>
       <Box mt={2} flexDirection="row">
         <Pressable onPress={handleLike} flexDirection="row" alignItems="center">
@@ -64,10 +63,7 @@ const Post = ({
         <Box ml={4}>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate(
-                'ViewPostScreen' as never,
-                {id: post.id} as never,
-              )
+              navigation.navigate('ViewPostScreen' as never, {post} as never)
             }
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
@@ -80,16 +76,6 @@ const Post = ({
             </Text>
           </TouchableOpacity>
         </Box>
-        {/* <Box ml={4} flexDirection="row" alignItems="center">
-          <Icon
-            color="primary.500"
-            size={6}
-            as={<Ionicons name="ios-share-social-outline" />}
-          />
-          <Text color="primary.500" ml={1}>
-            12
-          </Text>
-        </Box> */}
       </Box>
       {focusedPost !== post.id && (
         <Box
