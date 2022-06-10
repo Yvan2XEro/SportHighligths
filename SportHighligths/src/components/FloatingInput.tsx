@@ -35,6 +35,7 @@ const FloatingInput = ({
         });
     }
   }, [value, postId]);
+  
   return (
     <Box
       position="absolute"
