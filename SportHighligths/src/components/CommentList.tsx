@@ -24,38 +24,52 @@ const CommentList = ({
   const [nextCommentsUrl, setNextCommentsUrl] = React.useState<string | null>(
     url,
   );
+  const [refreshing, setRefreshing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     fetchNextComments();
   }, [nextCommentsUrl]);
+
   React.useEffect(() => {
     if (refetchFirstsComments) {
       setNextCommentsUrl(url);
     }
   }, [refetchFirstsComments]);
-  const fetchNextComments = React.useCallback(async () => {
-    if (nextCommentsUrl) {
-      setLoading(true);
-      if (nextCommentsUrl === url) setRefetchFirstsComments(false);
-      await http
-        .get(nextCommentsUrl)
-        .then(res => {
-          setNextCommentsUrl(res.data.next);
-          if (nextCommentsUrl === url) setComments(res.data.results);
-          else setComments(comments.concat(res.data.results));
-          setLoading(false);
-          if (res.data.count !== commentsCount) {
-            console.log('yooooooooo');
-            onChanpostComments();
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
-  }, [comments, nextCommentsUrl]);
+
+  const fetchNextComments = React.useCallback(
+    async (withLoader = true) => {
+      if (nextCommentsUrl) {
+        if (withLoader) setLoading(true);
+        if (nextCommentsUrl === url) setRefetchFirstsComments(false);
+        await http
+          .get(nextCommentsUrl)
+          .then(res => {
+            setNextCommentsUrl(res.data.next);
+            if (nextCommentsUrl === url) setComments(res.data.results);
+            else setComments(comments.concat(res.data.results));
+            setLoading(false);
+            if (res.data.count !== commentsCount) {
+              console.log('yooooooooo');
+              onChanpostComments();
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            setLoading(false);
+          });
+      }
+    },
+    [comments, nextCommentsUrl],
+  );
+
+  const onRefresh = React.useCallback(() => {
+    setNextCommentsUrl(url);
+    setRefreshing(true);
+    fetchNextComments(false);
+    setRefreshing(false);
+  }, []);
+
   return (
     <>
       {!loading && comments.length === 0 && (
@@ -72,6 +86,8 @@ const CommentList = ({
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => <CommentItem data={item} />}
         onScrollEndDrag={() => fetchNextComments()}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </>
   );

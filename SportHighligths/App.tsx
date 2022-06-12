@@ -20,6 +20,7 @@ const App = () => {
             barStyle={'light-content'}
           />
           <NavigationContainer>
+            {/* <AuthStackNavigation /> */}
             <AlternateNavigation />
           </NavigationContainer>
         </AuthContextProvider>

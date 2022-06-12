@@ -10,27 +10,38 @@ import {AuthContext} from '../contexts/AuthContextProvider';
 
 const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [fetching, setFetching] = React.useState(true);
+  const [refreshing, setRefreshing] = React.useState(false);
   const [users, setUsers] = React.useState<User[]>([]);
   const [nextUrl, setNextUrl] = React.useState<string | null>(url);
   useEffect(() => {
     fetchNextPage();
   }, []);
-  const fetchNextPage = async () => {
-    if (nextUrl) {
-      setFetching(true);
-      http
-        .get(nextUrl)
-        .then(({data}) => {
-          setUsers(users.concat(data.results));
-          setNextUrl(data.next);
-          setFetching(false);
-        })
-        .catch(e => {
-          console.error(e);
-          setFetching(false);
-        });
-    }
-  };
+  const fetchNextPage = useCallback(
+    async (withLoader = true) => {
+      if (nextUrl) {
+        if (withLoader) setFetching(true);
+        http
+          .get(nextUrl)
+          .then(({data}) => {
+            setUsers(users.concat(data.results));
+            setNextUrl(data.next);
+            setFetching(false);
+          })
+          .catch(e => {
+            console.error(e);
+            setFetching(false);
+          });
+      }
+    },
+    [nextUrl, http],
+  );
+
+  const onRefresh = useCallback(() => {
+    setNextUrl(url);
+    setRefreshing(true);
+    fetchNextPage(false);
+    setRefreshing(false);
+  }, []);
 
   return (
     <>
@@ -42,9 +53,11 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
       <FlatList
         data={users}
         keyExtractor={(u, i) => i + '' + u.id}
-        onScrollEndDrag={fetchNextPage}
+        onScrollEndDrag={() => fetchNextPage()}
         ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
         renderItem={({item}) => <UserItem user={item} />}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </>
   );
