@@ -37,6 +37,8 @@ const CommentList = ({
     }
   }, [refetchFirstsComments]);
 
+  const listRef = React.useRef<any>(null);
+
   const fetchNextComments = React.useCallback(
     async (withLoader = true) => {
       if (nextCommentsUrl) {
@@ -46,11 +48,12 @@ const CommentList = ({
           .get(nextCommentsUrl)
           .then(res => {
             setNextCommentsUrl(res.data.next);
-            if (nextCommentsUrl === url) setComments(res.data.results);
-            else setComments(comments.concat(res.data.results));
+            if (nextCommentsUrl === url) {
+              setComments(res.data.results);
+              listRef.current?.scrollToTop();
+            } else setComments(comments.concat(res.data.results));
             setLoading(false);
             if (res.data.count !== commentsCount) {
-              console.log('yooooooooo');
               onChanpostComments();
             }
           })
@@ -64,11 +67,11 @@ const CommentList = ({
   );
 
   const onRefresh = React.useCallback(() => {
-    setNextCommentsUrl(url);
     setRefreshing(true);
+    setNextCommentsUrl(url);
     fetchNextComments(false);
     setRefreshing(false);
-  }, []);
+  }, [url]);
 
   return (
     <>

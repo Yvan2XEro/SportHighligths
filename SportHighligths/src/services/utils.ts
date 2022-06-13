@@ -16,3 +16,9 @@ export const formatDate = (date: Date) => {
     }
     return moment(date).format('MMM DD, YYYY');
 }
+
+export function textSice(text: string, size = 20): string {
+    if (text.length <= size)
+        return text;
+    return text.substring(0, size) + '...';
+}

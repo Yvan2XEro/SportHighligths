@@ -9,13 +9,9 @@ import Spinner from './Spinner';
 
 // é
 const PostList = ({
-  setCommentingPostId,
-  commentingPostId,
   url,
   emptyText = 'Aucune publication pour le moment 😢, veillez vous abonner à des amis.',
 }: {
-  setCommentingPostId: (id: number | null) => void;
-  commentingPostId: number | null;
   url: string;
   emptyText?: string;
 }) => {
@@ -66,13 +62,7 @@ const PostList = ({
         onRefresh={onRefresh}
         refreshing={refreshing}
         ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
-        renderItem={({item}) => (
-          <Post
-            focusedPost={commentingPostId}
-            onFocus={() => setCommentingPostId(item.id)}
-            data={item}
-          />
-        )}
+        renderItem={({item}) => <Post data={item} />}
       />
     </>
   );

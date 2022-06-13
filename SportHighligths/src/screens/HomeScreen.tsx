@@ -4,32 +4,17 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FloatingInput from '../components/FloatingInput';
 import PostList from '../components/PostList';
 import * as Animatable from 'react-native-animatable';
 
 const HomeScreen = ({navigation}: any) => {
-  const [commentingPostId, setCommentingPostId] = React.useState<number | null>(
-    null,
-  );
-
   return (
     <Box style={{marginBottom: 56}} position="relative">
       <Box p={1} bgColor="primary.500">
         <Header navigation={navigation} />
       </Box>
       <Box mx={2} mb={10} position="relative">
-        <PostList
-          commentingPostId={commentingPostId}
-          setCommentingPostId={setCommentingPostId}
-          url="/posts"
-        />
-        {commentingPostId !== null && (
-          <FloatingInput
-            postId={commentingPostId}
-            onBlur={() => setCommentingPostId(null)}
-          />
-        )}
+        <PostList url="/posts" />
       </Box>
     </Box>
   );

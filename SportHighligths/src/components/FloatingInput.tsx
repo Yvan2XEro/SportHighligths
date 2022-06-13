@@ -1,20 +1,19 @@
-import {Box, Button, Icon, Input} from 'native-base';
+import {Avatar, Box, Button, Icon, Input} from 'native-base';
 import * as React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
+import {AuthContext} from '../contexts/AuthContextProvider';
 import {http} from '../services';
 
 const FloatingInput = ({
   postId,
-  onBlur,
   onComment,
 }: {
   postId: number | null;
-  onBlur: () => void;
   onComment: () => void;
 }) => {
-  const InputRef = React.useRef<any>(null);
   const [value, setValue] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
+  const {user} = React.useContext(AuthContext);
   const handleComment = React.useCallback(async () => {
     if (value.length > 0) {
       setLoading(true);
@@ -25,7 +24,6 @@ const FloatingInput = ({
         .then(() => {
           setValue('');
           setLoading(false);
-          onBlur();
           setValue('');
           onComment();
         })
@@ -35,32 +33,37 @@ const FloatingInput = ({
         });
     }
   }, [value, postId]);
-  
+
   return (
     <Box
       position="absolute"
       width="100%"
-      backgroundColor="white"
-      py={1}
+      // backgroundColor="white"
       alignItems="center"
-      bottom={0.1}
+      px={1}
+      bottom={0.2}
       flexDirection="row">
+      <Avatar source={{uri: user.avatar}} size={10} />
       <Input
         backgroundColor="white"
         value={value}
+        variant="unstyled"
+        placeholder="Entrez un commentaire..."
+        borderBottomWidth={2}
+        borderRadius={15}
         onChangeText={setValue}
-        ref={InputRef}
-        onBlur={onBlur}
-        flex={0.9}
-        autoFocus
+        flex={0.88}
       />
       <Button
         flex={0.12}
         onPress={handleComment}
+        borderRadius={15}
         isLoading={loading}
         variant="unstyled"
-        p={0}>
-        <Icon color="primary.500" as={<Feather name="send" />} size={10} />
+        backgroundColor="primary.500"
+        p={1}
+        m={0}>
+        <Icon color="white" as={<Feather name="send" />} size={8} />
       </Button>
     </Box>
   );

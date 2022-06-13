@@ -6,15 +6,7 @@ import {TouchableOpacity} from 'react-native';
 import {Post as IPost} from '../types';
 import {formatDate, http} from '../services';
 
-const Post = ({
-  data,
-  onFocus,
-  focusedPost,
-}: {
-  data: IPost;
-  onFocus?: () => void;
-  focusedPost?: number | null;
-}) => {
+const Post = ({data}: {data: IPost}) => {
   const navigation = useNavigation();
   const [post, setPost] = useState<IPost>(data);
   const handleLike = useCallback(async () => {
@@ -63,7 +55,10 @@ const Post = ({
         <Box ml={4}>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('ViewPostScreen' as never, {post} as never)
+              navigation.navigate(
+                'PostCommentsScreen' as never,
+                {post} as never,
+              )
             }
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
@@ -77,26 +72,6 @@ const Post = ({
           </TouchableOpacity>
         </Box>
       </Box>
-      {focusedPost !== post.id && (
-        <Box
-          flexDirection="row"
-          borderWidth={0.3}
-          borderColor="primary.500"
-          borderRadius={5}
-          p={2}
-          mt={2}>
-          <TouchableOpacity onPress={onFocus} style={{flex: 0.9}}>
-            <Text color="text.900">Commenter...</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex: 0.1}}>
-            <Icon
-              color="primary.500"
-              size={6}
-              as={<Ionicons name="images" />}
-            />
-          </TouchableOpacity>
-        </Box>
-      )}
     </Box>
   );
 };
