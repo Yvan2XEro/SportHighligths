@@ -10,6 +10,7 @@ import {
 } from 'react-native-axios-jwt';
 import {BASE_URL, http} from '../services';
 import {RegisterUser} from '../types';
+import SplashScreen from 'react-native-splash-screen';
 
 export const AuthContext = React.createContext({
   isLoggedIn: false,
@@ -49,14 +50,20 @@ const AuthContextProvider = ({children}: any) => {
 
   const refresh = React.useCallback(async (refreshToken: string) => {
     console.log('refresh');
-    const response = axios.post(`${BASE_URL}/auth/refresh`, {
-      refresh: refreshToken,
-    });
-    if ((await response).status === 200) {
-      setIsLoggedIn(true);
-      return (await response).data.access;
-    } else {
-      logout();
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/refresh`, {
+        refresh: refreshToken,
+      });
+      if (response.status === 200) {
+        setIsLoggedIn(true);
+        return response.data.access;
+      } else {
+        logout();
+      }
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      SplashScreen.hide();
     }
   }, []);
 
@@ -77,6 +84,8 @@ const AuthContextProvider = ({children}: any) => {
         setRefreshing(true);
         await refresh(refreshToken);
         setRefreshing(false);
+      } else {
+        SplashScreen.hide();
       }
     })();
   }, []);
