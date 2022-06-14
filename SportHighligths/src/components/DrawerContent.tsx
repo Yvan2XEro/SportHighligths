@@ -44,24 +44,6 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
           label="Mon compte"
           icon={<MaterialIcons name="account-circle" />}
         />
-        {/* <CustomDrawerItem
-          label="Se connecter"
-          icon={<MaterialIcons name="login" />}
-          onpress={() =>
-            navigation.navigate('AuthStackNavigation', {
-              screen: 'LoginScreen',
-            })
-          }
-        /> */}
-        {/* <CustomDrawerItem
-          label="Creer un compte"
-          icon={<FontAwesome5 name="user-plus" />}
-          onpress={() =>
-            navigation.navigate('AuthStackNavigation', {
-              screen: 'RegisterScreen',
-            })
-          }
-        /> */}
         <CustomDrawerItem
           label="Parametres"
           icon={<Ionicons name="md-settings-outline" />}

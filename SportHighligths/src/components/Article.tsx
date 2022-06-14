@@ -1,7 +1,6 @@
 import {Dimensions} from 'react-native';
 import React from 'react';
-import {Box, Image, Row, Text, View} from 'native-base';
-import Video from 'react-native-video';
+import {Image, Row, Text, View} from 'native-base';
 
 const VIDEO_WIN_WIDTH = Dimensions.get('window').width;
 

@@ -38,7 +38,6 @@ const FloatingInput = ({
     <Box
       position="absolute"
       width="100%"
-      // backgroundColor="white"
       alignItems="center"
       px={1}
       bottom={0.2}
