@@ -1,7 +1,6 @@
 import { TokenRefreshRequest, applyAuthTokenInterceptor } from 'react-native-axios-jwt'
 import axios from 'axios'
 
-// export const BASE_URL = 'http://127.0.0.1:8000'
 export const BASE_URL = 'http://192.168.118.69:8000'
 
 export const http = axios.create({ baseURL: BASE_URL })
@@ -16,5 +15,4 @@ const requestRefresh: TokenRefreshRequest = async (refreshToken: string): Promis
     return response.data.access
 }
 
-// 3. Add interceptor to your axios instance
 applyAuthTokenInterceptor(http, { requestRefresh })
