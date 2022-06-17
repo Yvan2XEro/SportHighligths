@@ -23,7 +23,6 @@ const PostCommentsScreen = () => {
         .get(`/posts/${p.id}`)
         .then(res => {
           setPost(res.data);
-          console.log('fetched...', post.commentsCount);
           setLoading(false);
         })
         .catch(err => {
