@@ -48,6 +48,7 @@ class PostSerializer(serializers.ModelSerializer):
     likesCount = serializers.SerializerMethodField('get_likes_count')
     liked = serializers.SerializerMethodField('get_liked')
 
+
     class Meta:
         model = Post
         fields = ['id', 'author', 'content', 'images',
