@@ -126,11 +126,11 @@ class GetPostsByMyFollowingsUsersAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
-    def get_queryset(self):
-        return Post.objects.filter(
-            author__in=Follow.objects.filter(
-                user=self.request.user).values_list('following', flat=True)
-        )
+    # def get_queryset(self):
+    #     return Post.objects.filter(
+    #         author__in=Follow.objects.filter(
+    #             user=self.request.user).values_list('following', flat=True)
+    #     )
 
 
 class NewPostForLoggedUserAPIView(generics.CreateAPIView):
