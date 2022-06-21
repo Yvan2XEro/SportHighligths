@@ -46,7 +46,7 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   return (
     <>
       {!fetching && users.length === 0 && (
-        <Box m={3}>
+        <Box m={3} flexShrink={1}>
           <Alert status="warning" text={emptyText} />
         </Box>
       )}

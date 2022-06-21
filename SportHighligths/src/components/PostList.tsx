@@ -51,7 +51,7 @@ const PostList = ({
   return (
     <>
       {!fetching && posts.length === 0 && (
-        <Box m={3}>
+        <Box my={3} flexShrink={1}>
           <Alert status="warning" text={emptyText} />
         </Box>
       )}
