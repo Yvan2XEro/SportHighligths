@@ -16,11 +16,11 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const HomeScreen = ({navigation}: any) => {
   return (
-    <Box style={{marginBottom: 56}} position="relative">
+    <Box mb={79} position="relative">
       <Box bgColor="primary.500">
         <Header navigation={navigation} />
       </Box>
-      <Box mx={2} mb={10} position="relative">
+      <Box mx={2} position="relative">
         <PostList url="/posts" />
       </Box>
     </Box>
@@ -219,7 +219,7 @@ export const SearchInput = ({
       {searchinActive && (
         <Animatable.View
           animation={focusedInput ? openSearchAnimation : closeSearchAnimation}
-          duration={500}
+          duration={ANIMATION_DURATION}
           style={{
             position: 'absolute',
             top: -70,

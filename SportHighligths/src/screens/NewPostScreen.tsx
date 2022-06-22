@@ -1,28 +1,76 @@
 import {Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {Alert, Box, FlatList, Icon, Image, Input, Row, Text} from 'native-base';
+import {
+  Alert,
+  Box,
+  FlatList,
+  Icon,
+  Input,
+  Pressable,
+  Row,
+  Text,
+} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
-import Video from 'react-native-video';
 import {MediaPickable} from '../types';
+import {uniqueid} from '../services/utils';
+import {http} from '../services';
+import * as Animatable from 'react-native-animatable';
+import ImagesViewerContextProvider, {
+  ImagesViewerContext,
+} from '../contexts/ImagesViewerContextProvider';
 
 const NewPostScreen = () => {
   const [medias, setMedias] = React.useState<MediaPickable[]>([]);
+  const [comment, setComment] = React.useState('');
 
   const navigation = useNavigation();
+
+  const handlePublish = useCallback(async () => {
+    const fd = new FormData();
+    fd.append('content', comment);
+    fd.append('images', medias);
+    http
+      .post('/posts/new', fd, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        if (err.response.data) console.error(err.response.data);
+        else console.warn('yoo\n', err.response);
+      });
+  }, [medias, comment, http]);
   return (
     <Box>
-      <Header navigation={navigation} />
-      <ImgPickerWrapper medias={medias} setMedias={setMedias} />
+      <Header navigation={navigation} onPublish={handlePublish} />
+
+      <ImagesViewerContextProvider>
+        <ImgPickerWrapper
+          medias={medias}
+          setMedias={setMedias}
+          comment={comment}
+          setComment={setComment}
+        />
+      </ImagesViewerContextProvider>
     </Box>
   );
 };
 
 export default NewPostScreen;
 
-export const Header = ({navigation}: {navigation: NavigationProp<any>}) => {
+export const Header = ({
+  navigation,
+  onPublish,
+}: {
+  navigation: NavigationProp<any>;
+  onPublish: () => void;
+}) => {
   return (
     <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -37,7 +85,7 @@ export const Header = ({navigation}: {navigation: NavigationProp<any>}) => {
           Nouvelle publication
         </Text>
       </Box>
-      <TouchableOpacity style={{marginLeft: 'auto'}}>
+      <TouchableOpacity style={{marginLeft: 'auto'}} onPress={onPublish}>
         <Text color="white" textTransform="uppercase" fontWeight="bold">
           Publier
         </Text>
@@ -66,20 +114,26 @@ const styles = StyleSheet.create({
 const IMAGE_SIZE = Dimensions.get('window').width / 4;
 const ImgPickerWrapper = ({
   medias,
-  setMedias,
+  setMedias: sm,
+  comment,
+  setComment,
 }: {
   medias: MediaPickable[];
   setMedias: (i: MediaPickable[]) => void;
+  comment: string;
+  setComment: (c: string) => void;
 }) => {
   const cleanupImages = useCallback(() => {
-    ImagePicker.clean()
-      .then(() => {
-        console.log('removed tmp images from tmp directory');
-      })
-      .catch((e: any) => {
-        Alert(e);
-      });
+    ImagePicker.clean().catch((e: any) => {
+      console.error(e);
+    });
   }, [ImagePicker]);
+
+  const setMedias = (m: MediaPickable[]) => {
+    sm(m);
+    setAnimateDeleting(false);
+  };
+
   const pickMediaWithCamera = useCallback(
     (mediaType: 'video' | 'photo', cropping: boolean) => {
       ImagePicker.openCamera({
@@ -96,18 +150,19 @@ const ImgPickerWrapper = ({
             medias.concat([
               {
                 uri: image.path,
-                mime: image.mime,
-                name: image.name,
+                type: image.mime,
+                name: uniqueid() + '.' + image.path.split('.').slice(-1)[0],
               },
             ]),
           );
         })
         .catch((e: any) => {
-          Alert(e);
+          console.error(e);
         });
     },
-    [ImagePicker],
+    [ImagePicker, medias, setMedias],
   );
+
   const pickExistingMedias = useCallback(
     (mediaType: 'video' | 'photo', cropping: boolean) => {
       ImagePicker.openPicker({
@@ -118,56 +173,71 @@ const ImgPickerWrapper = ({
         includeExif: true,
         forceJpg: true,
         mediaType,
-      }).then((pickedMideias: any) => {
+      }).then((pickedMedias: any) => {
         setMedias(
           medias.concat(
-            pickedMideias.map((m: any) => ({uri: m.path, mime: m.mime})),
+            pickedMedias.map((m: any) => ({
+              uri: m.path,
+              type: m.mime,
+              name: uniqueid() + '.' + m.path.split('.').slice(-1)[0],
+            })),
           ),
         );
       });
     },
-    [ImagePicker],
+    [ImagePicker, medias, setMedias],
   );
-
-  useEffect(() => {
-    console.log(medias);
-  }, [medias]);
+  const navigation = useNavigation();
+  const [animateDeleting, setAnimateDeleting] = useState(false);
+  const {openImagesViewer} = useContext(ImagesViewerContext);
   return (
     <Box>
-      <Row ml="auto" justifyContent="space-between">
-        {medias.length <= 0 ? (
-          <>
-            <TouchableOpacity
-              style={{marginRight: 7}}
-              onPress={() => pickMediaWithCamera('photo', false)}>
-              <Icon as={<MaterialCommunityIcons name="camera" />} size={8} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{marginRight: 7}}
-              onPress={() => pickExistingMedias('photo', false)}>
-              <Icon as={<MaterialCommunityIcons name="image" />} size={8} />
-            </TouchableOpacity>
-          </>
-        ) : (
+      <Box bgColor="primary.500">
+        <Row ml="auto" justifyContent="space-between">
           <TouchableOpacity
             style={{marginRight: 7}}
-            onPress={() => {
-              cleanupImages();
-              setMedias([]);
-            }}>
+            onPress={() => pickMediaWithCamera('photo', false)}>
             <Icon
-              as={<MaterialCommunityIcons name="notification-clear-all" />}
+              color="white"
+              as={<MaterialCommunityIcons name="camera" />}
               size={8}
             />
           </TouchableOpacity>
-        )}
-      </Row>
+          <TouchableOpacity
+            style={{marginRight: 7}}
+            onPress={() => pickExistingMedias('photo', false)}>
+            <Icon
+              color="white"
+              as={<MaterialCommunityIcons name="image-plus" />}
+              size={8}
+            />
+          </TouchableOpacity>
+          {medias.length > 0 && (
+            <TouchableOpacity
+              style={{marginRight: 7}}
+              onPress={() => {
+                setAnimateDeleting(true);
+                setTimeout(() => {
+                  cleanupImages();
+                  setMedias([]);
+                }, ANIMATION_DURATION);
+              }}>
+              <Icon
+                as={<MaterialCommunityIcons name="notification-clear-all" />}
+                size={10}
+                color="white"
+              />
+            </TouchableOpacity>
+          )}
+        </Row>
+      </Box>
       <Box borderWidth={0.3} borderRadius={5} m={2}>
         <Input
+          value={comment}
+          onChangeText={setComment}
           variant="unstyled"
           placeholder="Commentaire..."
           multiline
-          numberOfLines={4}
         />
       </Box>
       <Box>
@@ -177,35 +247,51 @@ const ImgPickerWrapper = ({
           numColumns={4}
           renderItem={({item, index}) => {
             return (
-              <TouchableOpacity
+              <Pressable
                 style={{position: 'relative'}}
-                onLongPress={undefined}>
-                {item.mime &&
-                item.mime.toLowerCase().indexOf('video/') === -1 ? (
-                  <Image
-                    key={index}
-                    source={{uri: item.uri}}
-                    style={{
-                      width: IMAGE_SIZE - 10,
-                      height: IMAGE_SIZE - 10,
-                      margin: 5,
-                    }}
-                    alt="media"
-                  />
-                ) : (
-                  <Video
-                    key={index}
-                    source={{uri: item.uri}}
-                    style={{
-                      width: IMAGE_SIZE - 10,
-                      height: IMAGE_SIZE - 10,
-                      margin: 5,
-                    }}
-                    resizeMode="cover"
-                    controls={true}
-                  />
+                onPress={() => openImagesViewer(medias, index)}
+                onLongPress={() => {
+                  console.log('Deleting');
+                }}>
+                {item.type && item.type.toLowerCase().indexOf('video/') === -1 && (
+                  <Animatable.View
+                    animation={
+                      animateDeleting
+                        ? {
+                            from: {
+                              opacity: 1,
+                              left: 0,
+                            },
+                            to: {
+                              opacity: 0,
+                              left: -100,
+                            },
+                          }
+                        : undefined
+                    }>
+                    <Animatable.Image
+                      key={index}
+                      animation={{
+                        from: {
+                          opacity: 0,
+                          left: -100,
+                        },
+                        to: {
+                          opacity: 1,
+                          left: 0,
+                        },
+                      }}
+                      duration={ANIMATION_DURATION}
+                      source={{uri: item.uri}}
+                      style={{
+                        width: IMAGE_SIZE - 10,
+                        height: IMAGE_SIZE - 10,
+                        margin: 5,
+                      }}
+                    />
+                  </Animatable.View>
                 )}
-              </TouchableOpacity>
+              </Pressable>
             );
           }}
         />
@@ -213,3 +299,5 @@ const ImgPickerWrapper = ({
     </Box>
   );
 };
+
+const ANIMATION_DURATION = 700;

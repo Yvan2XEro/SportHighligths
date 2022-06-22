@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  createDrawerNavigator,
-  //   useDrawerProgress,
-} from '@react-navigation/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import AppNavigation from './AppNavigation';
 import DrawerContent from '../components/DrawerContent';
 import AuthStackNavigation from './AuthStackNavigation';

@@ -9,6 +9,7 @@ import AuthContextProvider, {
   AuthContext,
 } from './src/contexts/AuthContextProvider';
 import AuthStackNavigation from './src/navigations/AuthStackNavigation';
+import ImagesViewerContextProvider from './src/contexts/ImagesViewerContextProvider';
 
 const App = () => {
   return (
@@ -20,7 +21,6 @@ const App = () => {
             barStyle={'light-content'}
           />
           <NavigationContainer>
-            {/* <AuthStackNavigation /> */}
             <AlternateNavigation />
           </NavigationContainer>
         </AuthContextProvider>

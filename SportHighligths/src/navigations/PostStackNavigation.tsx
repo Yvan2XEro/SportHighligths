@@ -16,5 +16,4 @@ const PostStackNavigation = () => {
     </Stack.Navigator>
   );
 };
-
 export default PostStackNavigation;

@@ -2,6 +2,7 @@ import { TokenRefreshRequest, applyAuthTokenInterceptor } from 'react-native-axi
 import axios from 'axios'
 
 export const BASE_URL = 'http://192.168.140.69:8000'
+// export const BASE_URL = 'http://127.0.0.1:8000'
 
 export const http = axios.create({ baseURL: BASE_URL })
 
