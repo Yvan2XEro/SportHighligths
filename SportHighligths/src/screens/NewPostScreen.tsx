@@ -36,6 +36,7 @@ const NewPostScreen = () => {
       .post('/posts/new', fd, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          accept: 'application/json, text/plain',
         },
       })
       .then(response => {

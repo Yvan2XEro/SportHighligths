@@ -14,6 +14,11 @@ const Post = ({data}: {data: IPost}) => {
   const [post, setPost] = useState<IPost>(data);
 
   const handleLike = useCallback(async () => {
+    setPost({
+      ...post,
+      likesCount: post.liked ? post.likesCount - 1 : post.likesCount + 1,
+      liked: !post.liked,
+    });
     if (!post.liked)
       http.post(`/posts/${post.id}/like`).then(res => {
         setPost({...post, liked: true, likesCount: post.likesCount + 1});

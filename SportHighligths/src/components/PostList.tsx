@@ -20,23 +20,27 @@ const PostList = ({
   const [refreshing, setRefreshing] = React.useState(false);
   const [nextUrl, setNextUrl] = React.useState<string | null>(url);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
+  const onRefresh = () => {
     setNextUrl(url);
+    setRefreshing(true);
     fetchNextPage(false);
     setRefreshing(false);
-  }, []);
+  };
+
   useEffect(() => {
     fetchNextPage();
   }, []);
+
   const fetchNextPage = useCallback(
     async (withLoader = true) => {
       if (nextUrl) {
+        console.log('yoo');
         if (withLoader) setFetching(true);
-        return http
+        http
           .get(nextUrl)
           .then(({data}) => {
-            setPosts(posts.concat(data.results));
+            if (nextUrl === url) setPosts(data.results);
+            else setPosts(posts.concat(data.results));
             setNextUrl(data.next);
             setFetching(false);
           })
@@ -50,13 +54,15 @@ const PostList = ({
   );
   return (
     <>
-      {!fetching && posts.length === 0 && (
-        <Box my={3} flexShrink={1}>
-          <Alert status="warning" text={emptyText} />
-        </Box>
-      )}
       <FlatList
         data={posts}
+        ListHeaderComponent={
+          !fetching && posts.length === 0 ? (
+            <Box my={3} flexShrink={1}>
+              <Alert status="warning" text={emptyText} />
+            </Box>
+          ) : undefined
+        }
         keyExtractor={(p, i) => i + '' + p.id}
         onScrollEndDrag={() => fetchNextPage()}
         onRefresh={onRefresh}

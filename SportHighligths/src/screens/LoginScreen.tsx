@@ -8,6 +8,7 @@ import {TouchableOpacity} from 'react-native';
 import {AuthContext} from '../contexts/AuthContextProvider';
 import {isValidEmail} from '../services';
 import Alert from '../components/Alert';
+import * as Animatable from 'react-native-animatable';
 
 const LoginScreen = ({navigation}: any) => {
   const {login} = useContext(AuthContext);
@@ -49,13 +50,11 @@ const LoginScreen = ({navigation}: any) => {
         </Text>
       </Box>
       <Box px={10} flex={0.8} justifyContent="center">
-        {alertError.length > 0 && (
-          <Alert
-            status="error"
-            onClose={() => setAlertError('')}
-            text={alertError}
-          />
-        )}
+        <Alert
+          status="error"
+          onClose={() => setAlertError('')}
+          text={alertError}
+        />
         <TextInput
           label="Email"
           icon={<Fontisto name="email" />}

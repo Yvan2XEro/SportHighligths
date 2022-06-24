@@ -37,3 +37,8 @@ export function uniqueid(length = 16): string {
 
     return (idstr);
 }
+
+
+export function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

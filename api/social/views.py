@@ -3,7 +3,7 @@ import pdb
 from rest_framework.response import Response
 from rest_framework import generics, status
 
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 from authentication.models import User
@@ -136,7 +136,7 @@ class GetPostsByMyFollowingsUsersAPIView(generics.ListAPIView):
 class NewPostForLoggedUserAPIView(generics.CreateAPIView):
     serializer_class = NewPostSerialiser
 
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

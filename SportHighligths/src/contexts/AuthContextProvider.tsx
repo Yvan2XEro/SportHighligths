@@ -27,6 +27,7 @@ const AuthContextProvider = ({children}: any) => {
   const [user, setUser] = React.useState(null as any);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(true);
+
   const login = React.useCallback(async (email: string, password: string) => {
     const response = axios.post(`${BASE_URL}/auth/login`, {email, password});
     const {tokens} = (await response).data;
@@ -60,7 +61,12 @@ const AuthContextProvider = ({children}: any) => {
       } else {
         logout();
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 403)
+      )
+        await logout();
       console.warn(error);
     } finally {
       SplashScreen.hide();
@@ -76,6 +82,16 @@ const AuthContextProvider = ({children}: any) => {
       return Promise.reject(response);
     }
   }, []);
+
+  const fetchUser = React.useCallback(async () => {
+    console.log('get user');
+    const response = await http.get(`${BASE_URL}/auth/me`);
+    if (response.status === 200) {
+      setUser(response.data);
+    } else {
+      logout();
+    }
+  }, [isLoggedIn]);
 
   React.useEffect(() => {
     (async () => {
@@ -110,18 +126,9 @@ const AuthContextProvider = ({children}: any) => {
     })();
   }, []);
 
-  const fetchUser = React.useCallback(async () => {
-    console.log('get user');
-    const response = await http.get(`${BASE_URL}/auth/me`);
-    if (response.status === 200) {
-      setUser(response.data);
-    } else {
-      logout();
-    }
-  }, [isLoggedIn]);
-
   React.useEffect(() => {
-    if (isLoggedIn) {
+    console.log(isLoggedIn);
+    if (isLoggedIn === true) {
       fetchUser();
     } else {
       if (!refreshing) logout();
