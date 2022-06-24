@@ -15,14 +15,27 @@ import {paperTheme} from '../themes';
 import {useFocusEffect} from '@react-navigation/native';
 
 const HomeScreen = ({navigation}: any) => {
+  const [isSearching, setIsSearching] = React.useState(false);
   return (
     <Box mb={79} position="relative">
       <Box bgColor="primary.500">
-        <Header navigation={navigation} />
+        <Header navigation={navigation} setIsSearching={setIsSearching} />
       </Box>
-      <Box mx={2} position="relative">
-        <PostList url="/posts" />
-      </Box>
+      <Animatable.View
+        animation={
+          !isSearching
+            ? {
+                from: {
+                  opacity: 0.5,
+                },
+                to: {opacity: 1},
+              }
+            : undefined
+        }>
+        <Box opacity={isSearching ? 0 : 1} mx={2} position="relative">
+          <PostList url="/posts" />
+        </Box>
+      </Animatable.View>
     </Box>
   );
 };
@@ -33,13 +46,17 @@ const styles = StyleSheet.create({
   actionBtn: {marginRight: 7},
 });
 
-const Header = ({navigation}: any) => {
+const Header = ({navigation, setIsSearching}: any) => {
   const [searching, setSearching] = React.useState(false);
-
+  React.useEffect(() => {
+    setIsSearching(searching);
+  }, [searching]);
   return searching ? (
     <SearchInput
-      searching={searching}
-      onCloseSearching={() => setSearching(false)}
+      onCloseSearching={() => {
+        setSearching(false);
+        setIsSearching(false);
+      }}
     />
   ) : (
     <ActionsHeader
@@ -54,10 +71,8 @@ const ANIMATION_DURATION = 500;
 // Search input screen
 export const SearchInput = ({
   onCloseSearching,
-  searching,
 }: {
   onCloseSearching: () => void;
-  searching: boolean;
 }) => {
   const searchInputRef = React.useRef<any>(null);
   const inputRef = React.useRef<any>(null);
@@ -111,6 +126,12 @@ export const SearchInput = ({
     },
   };
 
+  const handleClose = () => {
+    setSearchinActive(sa => (focusedInput ? sa : false));
+    setFocusedInput(focusedInput => !focusedInput);
+    setTimeout(onCloseSearching, ANIMATION_DURATION);
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       const backEvent = BackHandler.addEventListener(
@@ -121,7 +142,7 @@ export const SearchInput = ({
             inputRef?.current.clear();
             return true;
           } else if (focusedInput) {
-            setFocusedInput(false);
+            handleClose();
             return true;
           }
 
@@ -140,7 +161,7 @@ export const SearchInput = ({
         backEvent.remove();
         e.remove();
       };
-    }, [searchKey, focusedInput]),
+    }, [searchKey, focusedInput, inputRef.current, handleClose]),
   );
 
   return (
@@ -203,11 +224,7 @@ export const SearchInput = ({
           )}
           <TouchableOpacity
             style={{flex: 0.1, marginLeft: 'auto'}}
-            onPress={() => {
-              setSearchinActive(sa => (focusedInput ? sa : false));
-              setFocusedInput(focusedInput => !focusedInput);
-              setTimeout(onCloseSearching, ANIMATION_DURATION);
-            }}>
+            onPress={handleClose}>
             <Icon
               color="primary.500"
               as={<Ionicons name="close-outline" />}
@@ -229,12 +246,7 @@ export const SearchInput = ({
             zIndex: 111111,
             paddingTop: 60,
           }}>
-          <Text>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque
-            corrupti odio laboriosam, suscipit nihil necessitatibus aperiam hic,
-            deleniti maiores excepturi ratione debitis aliquam repellat!
-            Distinctio aperiam placeat cum repudiandae quisquam?
-          </Text>
+          <Text></Text>
         </Animatable.View>
       )}
     </View>

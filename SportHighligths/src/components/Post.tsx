@@ -30,7 +30,13 @@ const Post = ({data}: {data: IPost}) => {
   }, [post]);
   return (
     <ImagesViewerContextProvider>
-      <Box my={2}>
+      <Box
+        my={1}
+        py={1}
+        px={0.5}
+        borderWidth={0.3}
+        borderColor="primary.500"
+        borderRadius={3}>
         <Row justifyContent="space-between">
           <Row alignContent="center">
             <Avatar source={{uri: post.author.avatar}} size={45} />

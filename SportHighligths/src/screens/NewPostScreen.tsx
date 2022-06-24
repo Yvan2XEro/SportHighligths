@@ -225,7 +225,7 @@ const ImgPickerWrapper = ({
               }}>
               <Icon
                 as={<MaterialCommunityIcons name="notification-clear-all" />}
-                size={10}
+                size={8}
                 color="white"
               />
             </TouchableOpacity>
@@ -265,7 +265,7 @@ const ImgPickerWrapper = ({
                             },
                             to: {
                               opacity: 0,
-                              left: -100,
+                              left: -400,
                             },
                           }
                         : undefined
