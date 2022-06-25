@@ -21,6 +21,7 @@ import * as Animatable from 'react-native-animatable';
 import ImagesViewerContextProvider, {
   ImagesViewerContext,
 } from '../contexts/ImagesViewerContextProvider';
+import BackButton from '../components/BackButton';
 
 const NewPostScreen = () => {
   const [medias, setMedias] = React.useState<MediaPickable[]>([]);
@@ -74,15 +75,13 @@ export const Header = ({
 }) => {
   return (
     <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon
-          color="white"
-          as={<MaterialIcons name="chevron-left" />}
-          size={8}
-        />
-      </TouchableOpacity>
+      <BackButton />
       <Box ml={2}>
-        <Text color="white" fontWeight="bold">
+        <Text
+          fontSize="md"
+          textTransform="uppercase"
+          color="white"
+          fontWeight="bold">
           Nouvelle publication
         </Text>
       </Box>

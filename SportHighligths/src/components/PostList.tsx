@@ -2,6 +2,7 @@ import {Box, FlatList, ScrollView, View} from 'native-base';
 import React, {useCallback, useEffect} from 'react';
 import {RefreshControl} from 'react-native';
 import {http} from '../services';
+import {paperTheme} from '../themes';
 import {Post as IPost} from '../types';
 import Alert from './Alert';
 import Post from './Post';
@@ -64,12 +65,22 @@ const PostList = ({
           </Box>
         ) : undefined
       }
+      contentContainerStyle={onScroll ? {marginTop: 43} : undefined}
       keyExtractor={(p, i) => i + '' + p.id}
       onScrollEndDrag={() => fetchNextPage()}
       onRefresh={onRefresh}
       refreshing={refreshing}
+      showsVerticalScrollIndicator={false}
       ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
       renderItem={({item}) => <Post data={item} />}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          style={{zIndex: 1.2}}
+          colors={[paperTheme.colors.primary[500]]}
+          tintColor={paperTheme.colors.primary[500]}
+        />
+      }
       onScroll={e => {
         if (!!onScroll) onScroll(e.nativeEvent.contentOffset.y);
       }}

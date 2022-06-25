@@ -9,6 +9,7 @@ import {http, numConverter, textSice} from '../services';
 import {Post as IPost} from '../types';
 import Spinner from '../components/Spinner';
 import CommentList from '../components/CommentList';
+import BackButton from '../components/BackButton';
 
 const PostCommentsScreen = () => {
   const [loading, setLoading] = React.useState(true);
@@ -74,19 +75,17 @@ export const Header = ({post}: {post: IPost}) => {
     <Row
       backgroundColor="primary.500"
       alignItems="center"
-      px={0.5}
+      px={1}
       py={1}
       justifyContent="space-between">
+      <BackButton />
       <Row>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
+        <Box ml={0}>
+          <Text
             color="white"
-            as={<MaterialIcons name="chevron-left" />}
-            size={8}
-          />
-        </TouchableOpacity>
-        <Box ml={1}>
-          <Text color="white" fontWeight="bold" fontSize="xl">
+            fontWeight="bold"
+            fontSize="md"
+            textTransform="uppercase">
             Commentaires
           </Text>
           <Text color="white" fontSize="sm">
@@ -97,7 +96,6 @@ export const Header = ({post}: {post: IPost}) => {
           </Text>
         </Box>
       </Row>
-      <Box></Box>
       <TouchableOpacity>
         <Icon
           color="white"

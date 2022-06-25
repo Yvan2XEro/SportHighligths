@@ -25,12 +25,12 @@ const HomeScreen = ({navigation}: any) => {
   });
   return (
     <Box position="relative">
-      <Animated.View style={{transform: [{translateY}], zIndex: 2}}>
+      <Animated.View style={{transform: [{translateY}], zIndex: 1.1}}>
         <Box
           bgColor="primary.500"
           position="absolute"
           top={0}
-          pt={1}
+          pt={1.5}
           left={0}
           right={0}>
           <Header navigation={navigation} setIsSearching={setIsSearching} />
@@ -46,7 +46,8 @@ const HomeScreen = ({navigation}: any) => {
                 to: {opacity: 1},
               }
             : undefined
-        }>
+        }
+        style={{}}>
         <Box opacity={isSearching ? 0 : 1} mx={2} position="relative">
           <PostList
             url="/posts"

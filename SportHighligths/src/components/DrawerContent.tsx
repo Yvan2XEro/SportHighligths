@@ -1,4 +1,4 @@
-import {Box, Icon, Row, ScrollView, Text, View} from 'native-base';
+import {Box, Icon, Pressable, Row, ScrollView, Text, View} from 'native-base';
 import React, {useContext} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import UserInfos from './UserInfos';
@@ -16,12 +16,18 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
   return (
     <View flex={1}>
       <Box position="relative" py={10} bgColor="primary.500" flex={0.25}>
-        <Box mx={2}>
+        <Pressable
+          mx={2}
+          onPress={() =>
+            navigation.navigate('WithoutTabStackNavigator', {
+              screen: 'EditProfileScreen',
+            })
+          }>
           <UserInfos showPubsCount={false} data={user} />
           <Text textAlign="center" fontWeight="700" color="white" fontSize="md">
             {user?.firstName} {user?.lastName}
           </Text>
-        </Box>
+        </Pressable>
       </Box>
       <Text textAlign="center" color="primary.500">
         {user?.email}
