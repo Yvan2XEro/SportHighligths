@@ -1,14 +1,12 @@
 import {Box, Icon, Input, Row} from 'native-base';
-import React, {useEffect} from 'react';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../components/UsersList';
-import {http} from '../services';
-import {User} from '../types';
 
 const INIT_URL = '/users';
 const UsersScreen = () => {
   return (
-    <Box>
+    <Box flex={1}>
       <Header />
       <Box mx={2} mt={1}>
         <UsersList

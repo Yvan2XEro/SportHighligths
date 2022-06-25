@@ -11,9 +11,11 @@ import Spinner from './Spinner';
 const PostList = ({
   url,
   emptyText = 'Aucune publication pour le moment 😢, veillez vous abonner à des amis.',
+  onScroll,
 }: {
   url: string;
   emptyText?: string;
+  onScroll?: (v: number) => void;
 }) => {
   const [posts, setPosts] = React.useState<IPost[]>([]);
   const [fetching, setFetching] = React.useState(true);
@@ -53,24 +55,25 @@ const PostList = ({
     [nextUrl, http],
   );
   return (
-    <>
-      <FlatList
-        data={posts}
-        ListHeaderComponent={
-          !fetching && posts.length === 0 ? (
-            <Box my={3} flexShrink={1}>
-              <Alert status="warning" text={emptyText} />
-            </Box>
-          ) : undefined
-        }
-        keyExtractor={(p, i) => i + '' + p.id}
-        onScrollEndDrag={() => fetchNextPage()}
-        onRefresh={onRefresh}
-        refreshing={refreshing}
-        ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
-        renderItem={({item}) => <Post data={item} />}
-      />
-    </>
+    <FlatList
+      data={posts}
+      ListHeaderComponent={
+        !fetching && posts.length === 0 ? (
+          <Box my={3} flexShrink={1}>
+            <Alert status="warning" text={emptyText} />
+          </Box>
+        ) : undefined
+      }
+      keyExtractor={(p, i) => i + '' + p.id}
+      onScrollEndDrag={() => fetchNextPage()}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
+      ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
+      renderItem={({item}) => <Post data={item} />}
+      onScroll={e => {
+        if (!!onScroll) onScroll(e.nativeEvent.contentOffset.y);
+      }}
+    />
   );
 };
 

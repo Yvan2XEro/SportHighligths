@@ -139,16 +139,36 @@ const ProfileMenu = ({user}: {user: User}) => {
       <Menu.Group title="Profile">
         {user.id == loggedUser.id ? (
           <>
-            <Menu.Item>Editer mon profile</Menu.Item>
-            <Menu.Item>Parametres de mon compte</Menu.Item>
+            <Menu.Item>
+              <Text fontWeight="bold" ml={1}>
+                Editer mon profile
+              </Text>
+            </Menu.Item>
+            <Menu.Item>
+              <Text fontWeight="bold" ml={1}>
+                Parametres de mon compte
+              </Text>
+            </Menu.Item>
           </>
         ) : (
           <>
-            <Menu.Item>Plus de details</Menu.Item>
+            <Menu.Item>
+              <Text fontWeight="bold" ml={1}>
+                Plus de details
+              </Text>
+            </Menu.Item>
             {!user.followed ? (
-              <Menu.Item>Suivre</Menu.Item>
+              <Menu.Item>
+                <Text fontWeight="bold" ml={1}>
+                  Suivre
+                </Text>
+              </Menu.Item>
             ) : (
-              <Menu.Item>Ne plus suivre</Menu.Item>
+              <Menu.Item>
+                <Text fontWeight="bold" ml={1}>
+                  Ne plus suivre
+                </Text>
+              </Menu.Item>
             )}
           </>
         )}

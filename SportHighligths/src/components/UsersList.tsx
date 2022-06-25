@@ -1,5 +1,5 @@
 import {TouchableOpacity} from 'react-native';
-import React, {memo, useCallback, useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {Avatar, Box, Button, FlatList, Row, Text} from 'native-base';
 import {useNavigation} from '@react-navigation/native';
 import {User} from '../types';
@@ -13,9 +13,11 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [users, setUsers] = React.useState<User[]>([]);
   const [nextUrl, setNextUrl] = React.useState<string | null>(url);
+
   useEffect(() => {
     fetchNextPage();
   }, []);
+
   const fetchNextPage = useCallback(
     async (withLoader = true) => {
       if (nextUrl) {
@@ -41,25 +43,25 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
     setRefreshing(true);
     fetchNextPage(false);
     setRefreshing(false);
-  }, []);
+  }, [url]);
 
   return (
-    <>
-      {!fetching && users.length === 0 && (
-        <Box m={3} flexShrink={1}>
-          <Alert status="warning" text={emptyText} />
-        </Box>
-      )}
-      <FlatList
-        data={users}
-        keyExtractor={(u, i) => i + '' + u.id}
-        onScrollEndDrag={() => fetchNextPage()}
-        ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
-        renderItem={({item}) => <UserItem user={item} />}
-        onRefresh={onRefresh}
-        refreshing={refreshing}
-      />
-    </>
+    <FlatList
+      data={users}
+      ListHeaderComponent={
+        !fetching && users.length === 0 ? (
+          <Box m={3} flexShrink={1}>
+            <Alert status="warning" text={emptyText} />
+          </Box>
+        ) : undefined
+      }
+      keyExtractor={(u, i) => i + '' + u.id}
+      onScrollEndDrag={() => fetchNextPage()}
+      ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
+      renderItem={({item}) => <UserItem user={item} />}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
+    />
   );
 };
 
@@ -100,8 +102,11 @@ const UserItem = ({user}: {user: User}) => {
     <Row mb={1}>
       <TouchableOpacity
         style={{flexDirection: 'row', flex: 6}}
-        onPress={() =>
-          navigation.navigate('ProfileScreen' as never, {user} as never)
+        onPress={
+          user.id !== loggedUser.id
+            ? () =>
+                navigation.navigate('ProfileScreen' as never, {user} as never)
+            : undefined
         }>
         <Box>
           <Avatar source={{uri: u.avatar}} />

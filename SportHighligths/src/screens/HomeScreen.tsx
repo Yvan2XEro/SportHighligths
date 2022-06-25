@@ -5,6 +5,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -16,11 +17,25 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const HomeScreen = ({navigation}: any) => {
   const [isSearching, setIsSearching] = React.useState(false);
+  const scrollY = new Animated.Value(0);
+  const diffClamp = Animated.diffClamp(scrollY, 0, 45);
+  const translateY = diffClamp.interpolate({
+    inputRange: [0, 45],
+    outputRange: [0, -45],
+  });
   return (
-    <Box mb={79} position="relative">
-      <Box bgColor="primary.500">
-        <Header navigation={navigation} setIsSearching={setIsSearching} />
-      </Box>
+    <Box position="relative">
+      <Animated.View style={{transform: [{translateY}], zIndex: 2}}>
+        <Box
+          bgColor="primary.500"
+          position="absolute"
+          top={0}
+          pt={1}
+          left={0}
+          right={0}>
+          <Header navigation={navigation} setIsSearching={setIsSearching} />
+        </Box>
+      </Animated.View>
       <Animatable.View
         animation={
           !isSearching
@@ -33,7 +48,12 @@ const HomeScreen = ({navigation}: any) => {
             : undefined
         }>
         <Box opacity={isSearching ? 0 : 1} mx={2} position="relative">
-          <PostList url="/posts" />
+          <PostList
+            url="/posts"
+            onScroll={(n: number) => {
+              scrollY.setValue(n);
+            }}
+          />
         </Box>
       </Animatable.View>
     </Box>
