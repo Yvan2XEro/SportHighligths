@@ -1,5 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {
+  Actionsheet,
   Avatar,
   Box,
   Button,
@@ -8,6 +9,7 @@ import {
   Row,
   ScrollView,
   Text,
+  useDisclose,
   View,
 } from 'native-base';
 import BackButton from '../components/BackButton';
@@ -17,6 +19,7 @@ import {TextInput} from './LoginScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import BottomSheet from 'reanimated-bottom-sheet';
 
 const EditProfileScreen = () => {
   return (
@@ -50,13 +53,73 @@ const Header = () => {
   );
 };
 
+const BUTTONS = [
+  'Voir la photo',
+  'Importer une image',
+  'Supprimmer la photo de profile',
+  'Fermer',
+];
+const CANCEL_INDEX = 3;
+const DESTRUCTIVE_INDEX = 2;
 const FormWrapper = () => {
   const {user} = useContext(AuthContext) as {user: User};
+  const {onOpen, onClose, isOpen} = useDisclose();
   return (
-    <ScrollView position="relative">
-      <Box h={100} backgroundColor="primary.500" />
+    <>
+      <ScrollView position="relative">
+        <Box h={100} backgroundColor="primary.500" />
+        <AvatarWrapper onPress={onOpen} user={user} />
+        <Box mt={10} px={3}>
+          <Text mt={5} textAlign="center" textTransform="uppercase">
+            Informations personnelles
+          </Text>
+          <EditProfileForm user={user} />
+          <Text mt={5} textAlign="center" textTransform="uppercase">
+            Changer le mot de passe
+          </Text>
+          <ChangePasswordForm />
+        </Box>
+      </ScrollView>
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content>
+          <Actionsheet.Item>
+            <Row alignItems="center">
+              <Icon
+                as={<MaterialCommunityIcons name="image-filter-center-focus" />}
+                size={25}
+              />
+              <Text ml={2}>Voir la photo</Text>
+            </Row>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Row alignItems="center">
+              <Icon
+                as={<MaterialCommunityIcons name="image-edit" />}
+                size={25}
+              />
+              <Text ml={2}>Importer une photo</Text>
+            </Row>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Row alignItems="center">
+              <Icon
+                as={<MaterialCommunityIcons name="image-remove" />}
+                size={25}
+              />
+              <Text ml={2}>Supprimer la photo de profile</Text>
+            </Row>
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+        <Actionsheet.Item onPress={onClose}>Fermer</Actionsheet.Item>
+      </Actionsheet>
+    </>
+  );
+};
+
+const AvatarWrapper = ({user, onPress}: {user: User; onPress: () => void}) => {
+  return (
+    <Pressable onPress={onPress} position="absolute">
       <Avatar
-        position="absolute"
         style={{top: 50}}
         left={5}
         source={{
@@ -64,17 +127,7 @@ const FormWrapper = () => {
         }}
         size={85}
       />
-      <Box mt={10} px={3}>
-        <Text mt={5} textAlign="center" textTransform="uppercase">
-          Informations personnelles
-        </Text>
-        <EditProfileForm user={user} />
-        <Text mt={5} textAlign="center" textTransform="uppercase">
-          Changer le mot de passe
-        </Text>
-        <ChangePasswordForm />
-      </Box>
-    </ScrollView>
+    </Pressable>
   );
 };
 

@@ -19,9 +19,10 @@ import PostList from '../components/PostList';
 import UsersList from '../components/UsersList';
 import {paperTheme, tabsTheme} from '../themes';
 import {User} from '../types';
-import {http} from '../services';
+import {http, textSice} from '../services';
 import Spinner from '../components/Spinner';
 import {AuthContext} from '../contexts/AuthContextProvider';
+import BackButton from '../components/BackButton';
 
 const ProfileScreen = () => {
   const {user} = useRoute().params as {user: User};
@@ -100,16 +101,15 @@ export const Header = ({user}: {user: User}) => {
       py={1}
       flexDirection="row"
       justifyContent="space-between">
-      <Row alignItems="center">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            color="white"
-            as={<MaterialIcons name="chevron-left" />}
-            size={8}
-          />
-        </TouchableOpacity>
-        <Text fontSize="2xl" color="white">
-          {user.firstName} {user.lastName}
+      <Row px={1} alignItems="center">
+        <BackButton />
+        <Text
+          ml={1}
+          fontSize="md"
+          fontWeight="bold"
+          textTransform="uppercase"
+          color="white">
+          {textSice(user.firstName + ' ' + user.lastName, 30)}
         </Text>
       </Row>
       <ProfileMenu user={user} />
