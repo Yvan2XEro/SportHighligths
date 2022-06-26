@@ -9,7 +9,13 @@ import ImagesViewerContextProvider, {
   ImagesViewerContext,
 } from '../contexts/ImagesViewerContextProvider';
 
-const Post = ({data}: {data: IPost}) => {
+const Post = ({
+  data,
+  onGotoComments,
+}: {
+  data: IPost;
+  onGotoComments?: () => void;
+}) => {
   const navigation = useNavigation();
   const [post, setPost] = useState<IPost>(data);
 
@@ -64,12 +70,13 @@ const Post = ({data}: {data: IPost}) => {
           </Pressable>
           <Box ml={4}>
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
                 navigation.navigate(
                   'PostCommentsScreen' as never,
                   {post} as never,
-                )
-              }
+                );
+                if (!!onGotoComments) onGotoComments();
+              }}
               style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon
                 color="primary.500"

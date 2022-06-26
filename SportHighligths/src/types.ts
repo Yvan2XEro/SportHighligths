@@ -1,3 +1,8 @@
+export type ReduxAction = {
+  type: string
+  payload: any
+}
+
 export type MediaPickable = {
   uri: string;
   type: string;

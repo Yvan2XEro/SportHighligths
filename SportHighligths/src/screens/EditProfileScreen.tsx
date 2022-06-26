@@ -19,7 +19,6 @@ import {TextInput} from './LoginScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import BottomSheet from 'reanimated-bottom-sheet';
 
 const EditProfileScreen = () => {
   return (

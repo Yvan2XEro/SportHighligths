@@ -13,10 +13,12 @@ const PostList = ({
   url,
   emptyText = 'Aucune publication pour le moment 😢, veillez vous abonner à des amis.',
   onScroll,
+  onGotoComments,
 }: {
   url: string;
   emptyText?: string;
   onScroll?: (v: number) => void;
+  onGotoComments?: () => void;
 }) => {
   const [posts, setPosts] = React.useState<IPost[]>([]);
   const [fetching, setFetching] = React.useState(true);
@@ -72,7 +74,9 @@ const PostList = ({
       refreshing={refreshing}
       showsVerticalScrollIndicator={false}
       ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
-      renderItem={({item}) => <Post data={item} />}
+      renderItem={({item}) => (
+        <Post data={item} onGotoComments={onGotoComments} />
+      )}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

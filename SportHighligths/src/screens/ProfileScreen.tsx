@@ -23,11 +23,16 @@ import {http, textSice} from '../services';
 import Spinner from '../components/Spinner';
 import {AuthContext} from '../contexts/AuthContextProvider';
 import BackButton from '../components/BackButton';
+import {useDispatch} from 'react-redux';
+import {saveRoute} from '../store/slices';
 
 const ProfileScreen = () => {
-  const {user} = useRoute().params as {user: User};
+  const route = useRoute();
+  const {user} = route.params as {user: User};
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [u, setU] = useState<User>(user);
+
   useEffect(() => {
     setLoading(true);
     (async () => {
@@ -63,6 +68,7 @@ const ProfileScreen = () => {
               <PostList
                 emptyText="Aucune publication pour cet utilisateur!"
                 url={`/users/${user.id}/posts`}
+                onGotoComments={() => dispatch(saveRoute(route))}
               />
             </TabScreen>
             <TabScreen label="Abonnnees">
@@ -93,7 +99,6 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 export const Header = ({user}: {user: User}) => {
-  const navigation = useNavigation();
   return (
     <Box
       bgColor="primary.500"
@@ -102,7 +107,7 @@ export const Header = ({user}: {user: User}) => {
       flexDirection="row"
       justifyContent="space-between">
       <Row px={1} alignItems="center">
-        <BackButton />
+        <BackButton prevRoute="UsersScreen" />
         <Text
           ml={1}
           fontSize="md"

@@ -9,21 +9,23 @@ import AuthContextProvider, {
   AuthContext,
 } from './src/contexts/AuthContextProvider';
 import AuthStackNavigation from './src/navigations/AuthStackNavigation';
-import ImagesViewerContextProvider from './src/contexts/ImagesViewerContextProvider';
-
+import {Provider as ReduxProvider} from 'react-redux';
+import {store} from './src/store';
 const App = () => {
   return (
     <NativeBaseProvider theme={paperTheme}>
       <PaperProvider>
-        <AuthContextProvider>
-          <StatusBar
-            backgroundColor={paperTheme.colors.primary[500]}
-            barStyle={'light-content'}
-          />
-          <NavigationContainer>
-            <AlternateNavigation />
-          </NavigationContainer>
-        </AuthContextProvider>
+        <ReduxProvider store={store}>
+          <AuthContextProvider>
+            <StatusBar
+              backgroundColor={paperTheme.colors.primary[500]}
+              barStyle={'light-content'}
+            />
+            <NavigationContainer>
+              <AlternateNavigation />
+            </NavigationContainer>
+          </AuthContextProvider>
+        </ReduxProvider>
       </PaperProvider>
     </NativeBaseProvider>
   );
