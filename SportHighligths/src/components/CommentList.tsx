@@ -75,14 +75,16 @@ const CommentList = ({
 
   return (
     <>
-      {!loading && comments.length === 0 && (
-        <Box m={3}>
-          <Alert status="warning" text={emptyText} />
-        </Box>
-      )}
       <FlatList
-        data={comments}
         mb={10}
+        data={comments}
+        ListHeaderComponent={
+          !loading && comments.length === 0 ? (
+            <Box m={3}>
+              <Alert status="warning" text={emptyText} />
+            </Box>
+          ) : undefined
+        }
         ListFooterComponent={
           loading ? <Spinner text="" size="sm" /> : undefined
         }

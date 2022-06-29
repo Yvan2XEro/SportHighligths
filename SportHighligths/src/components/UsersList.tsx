@@ -16,15 +16,17 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [nextUrl, setNextUrl] = React.useState<string | null>(url);
 
   useEffect(() => {
-    fetchNextPage();
+    fetchNextPage(true, url);
   }, []);
 
   const fetchNextPage = useCallback(
-    async (withLoader = true) => {
-      if (nextUrl) {
+    async (withLoader = true, url?: string) => {
+      if (!nextUrl && url === undefined) return;
+      if (nextUrl || url) {
         if (withLoader) setFetching(true);
+        if (!nextUrl && url) setNextUrl(url);
         http
-          .get(nextUrl)
+          .get(nextUrl + '')
           .then(({data}) => {
             setUsers(users.concat(data.results));
             setNextUrl(data.next);
@@ -36,13 +38,13 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
           });
       }
     },
-    [nextUrl, http],
+    [nextUrl, http, nextUrl],
   );
 
   const onRefresh = useCallback(() => {
     setNextUrl(url);
     setRefreshing(true);
-    fetchNextPage(false);
+    fetchNextPage(false, nextUrl ? nextUrl : undefined);
     setRefreshing(false);
   }, [url]);
 
@@ -62,14 +64,13 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
           style={{zIndex: 1.2}}
           colors={[paperTheme.colors.primary[500]]}
           tintColor={paperTheme.colors.primary[500]}
+          onRefresh={onRefresh}
         />
       }
       keyExtractor={(u, i) => i + '' + u.id}
       onScrollEndDrag={() => fetchNextPage()}
       ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
       renderItem={({item}) => <UserItem user={item} />}
-      onRefresh={onRefresh}
-      refreshing={refreshing}
     />
   );
 };

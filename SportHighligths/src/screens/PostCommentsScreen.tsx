@@ -39,7 +39,7 @@ const PostCommentsScreen = () => {
   return (
     <Box height="100%">
       <Header post={post} />
-      {!loading ? (
+      {!loading && (
         <>
           <View mb={65} marginX={2}>
             <CommentList
@@ -52,8 +52,6 @@ const PostCommentsScreen = () => {
             />
           </View>
         </>
-      ) : (
-        <Spinner text="" size="sm" />
       )}
       <FloatingInput
         postId={post.id}
@@ -70,7 +68,6 @@ const PostCommentsScreen = () => {
 export default PostCommentsScreen;
 
 export const Header = ({post}: {post: IPost}) => {
-  const navigation = useNavigation();
   return (
     <Row
       backgroundColor="primary.500"

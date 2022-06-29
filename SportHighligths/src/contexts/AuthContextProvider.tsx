@@ -18,6 +18,7 @@ export const AuthContext = React.createContext({
   login: async (email: string, password: string) => new Promise(() => {}),
   register: async (data: RegisterUser) => new Promise(() => {}),
   logout: async () => {},
+  fetchUser: async () => {},
   getAccessToken,
   refreshing: false,
   getRefreshToken,
@@ -145,6 +146,7 @@ const AuthContextProvider = ({children}: any) => {
         logout,
         setUser,
         register,
+        fetchUser,
         getAccessToken,
         getRefreshToken,
       }}>

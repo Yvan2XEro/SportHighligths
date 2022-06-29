@@ -1,7 +1,16 @@
 import {Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useCallback, useContext, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {Box, FlatList, Icon, Input, Pressable, Row, Text} from 'native-base';
+import {
+  Box,
+  Button,
+  FlatList,
+  Icon,
+  Input,
+  Pressable,
+  Row,
+  Text,
+} from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {MediaPickable} from '../types';
@@ -12,32 +21,61 @@ import ImagesViewerContextProvider, {
   ImagesViewerContext,
 } from '../contexts/ImagesViewerContextProvider';
 import BackButton from '../components/BackButton';
+import {useToast} from 'react-native-toast-notifications';
 
 const NewPostScreen = () => {
+  const {show} = useToast();
   const [medias, setMedias] = React.useState<MediaPickable[]>([]);
   const [comment, setComment] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const handlePublish = useCallback(async () => {
-    const fd = new FormData();
+    let fd = new FormData();
     fd.append('content', comment);
-    fd.append('images', medias);
+    if (medias.length > 0) fd.append('images', medias[0]);
+    const conf = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        accept: 'application/json, text/plain',
+      },
+    };
+    setLoading(true);
     http
-      .post('/posts/new', fd, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          accept: 'application/json, text/plain',
-        },
-      })
+      .post('/posts/new', fd, conf)
       .then(response => {
         console.log(response);
+        const postId = response.data.id;
+        if (medias.length > 1) {
+          for (let index = 1; index < medias.length; index++) {
+            fd.append('images', medias[index]);
+            http.post(`posts/${postId}/add-image`, fd, conf).then(() => {
+              if (index == medias.length - 1) {
+                setLoading(false);
+                show('SUCCESS');
+                setMedias([]);
+                setComment('');
+              }
+            });
+          }
+        } else {
+          setLoading(false);
+          show('SUCCESS');
+          setMedias([]);
+          setComment('');
+        }
       })
       .catch(err => {
-        console.error(err.response.status);
+        console.error(err.response);
+        setLoading(false);
       });
   }, [medias, comment, http]);
   return (
     <Box>
-      <Header onPublish={handlePublish} />
+      <Header
+        valid={medias.length > 0 && comment.length > 0}
+        onPublish={handlePublish}
+        loading={loading}
+      />
 
       <ImagesViewerContextProvider>
         <ImgPickerWrapper
@@ -53,7 +91,15 @@ const NewPostScreen = () => {
 
 export default NewPostScreen;
 
-export const Header = ({onPublish}: {onPublish: () => void}) => {
+export const Header = ({
+  onPublish,
+  loading,
+  valid,
+}: {
+  onPublish: () => void;
+  loading: boolean;
+  valid: boolean;
+}) => {
   return (
     <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
       <BackButton />
@@ -66,11 +112,13 @@ export const Header = ({onPublish}: {onPublish: () => void}) => {
           Nouvelle publication
         </Text>
       </Box>
-      <TouchableOpacity style={{marginLeft: 'auto'}} onPress={onPublish}>
-        <Text color="white" textTransform="uppercase" fontWeight="bold">
-          Publier
-        </Text>
-      </TouchableOpacity>
+      <Button
+        disabled={!valid}
+        isLoading={loading}
+        ml="auto"
+        onPress={onPublish}>
+        PUBLIER
+      </Button>
     </Row>
   );
 };

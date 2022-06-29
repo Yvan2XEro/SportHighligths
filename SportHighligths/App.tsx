@@ -10,6 +10,7 @@ import AuthContextProvider, {
 } from './src/contexts/AuthContextProvider';
 import AuthStackNavigation from './src/navigations/AuthStackNavigation';
 import {Provider as ReduxProvider} from 'react-redux';
+import {ToastProvider} from 'react-native-toast-notifications';
 import {store} from './src/store';
 const App = () => {
   return (
@@ -21,9 +22,14 @@ const App = () => {
               backgroundColor={paperTheme.colors.primary[500]}
               barStyle={'light-content'}
             />
-            <NavigationContainer>
-              <AlternateNavigation />
-            </NavigationContainer>
+            <ToastProvider
+              duration={5000}
+              animationType="slide-in"
+              animationDuration={250}>
+              <NavigationContainer>
+                <AlternateNavigation />
+              </NavigationContainer>
+            </ToastProvider>
           </AuthContextProvider>
         </ReduxProvider>
       </PaperProvider>
@@ -34,7 +40,11 @@ const App = () => {
 export default App;
 
 const AlternateNavigation = () => {
-  const {isLoggedIn} = useContext(AuthContext);
+  const {isLoggedIn, refreshing} = useContext(AuthContext);
 
-  return isLoggedIn ? <DrawerNavigation /> : <AuthStackNavigation />;
+  return isLoggedIn && !refreshing ? (
+    <DrawerNavigation />
+  ) : (
+    <AuthStackNavigation />
+  );
 };

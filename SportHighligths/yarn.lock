@@ -7416,6 +7416,11 @@ react-native-svg@^12.3.0:
     css-select "^4.2.1"
     css-tree "^1.0.0-alpha.39"
 
+react-native-toast-notifications@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-toast-notifications/-/react-native-toast-notifications-3.3.0.tgz#e88b0b264812d86ff3a8c62eca4ea54b3ce3da35"
+  integrity sha512-R94XMwHzovGc3CskniqM2EwS6GqVWgfynXi9ua/qvS+F7eD2dvlkhDhf+eUQNpTexQLoG5MYOJRQ+J8WQs3LbQ==
+
 react-native-vector-icons@^9.0.0, react-native-vector-icons@^9.1.0:
   version "9.1.0"
   resolved "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.1.0.tgz"

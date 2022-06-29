@@ -21,9 +21,9 @@ const PostList = ({
   onGotoComments?: () => void;
 }) => {
   const [posts, setPosts] = React.useState<IPost[]>([]);
+  const [nextUrl, setNextUrl] = React.useState<string | null>(url);
   const [fetching, setFetching] = React.useState(true);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [nextUrl, setNextUrl] = React.useState<string | null>(url);
 
   const onRefresh = () => {
     setNextUrl(url);
@@ -38,7 +38,6 @@ const PostList = ({
 
   const fetchNextPage = useCallback(
     async (withLoader = true) => {
-      console.log('yoooo');
       if (nextUrl) {
         if (withLoader) setFetching(true);
         http
@@ -70,8 +69,6 @@ const PostList = ({
       contentContainerStyle={onScroll ? {marginTop: 43} : undefined}
       keyExtractor={(p, i) => i + '' + p.id}
       onScrollEndDrag={() => fetchNextPage()}
-      onRefresh={onRefresh}
-      refreshing={refreshing}
       showsVerticalScrollIndicator={false}
       ListFooterComponent={fetching ? <Spinner text="" /> : undefined}
       renderItem={({item}) => (
@@ -80,6 +77,7 @@ const PostList = ({
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
+          onRefresh={onRefresh}
           style={{zIndex: 1.2}}
           colors={[paperTheme.colors.primary[500]]}
           tintColor={paperTheme.colors.primary[500]}

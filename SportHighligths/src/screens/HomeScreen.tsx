@@ -46,8 +46,7 @@ const HomeScreen = ({navigation}: any) => {
                 to: {opacity: 1},
               }
             : undefined
-        }
-        style={{}}>
+        }>
         <Box opacity={isSearching ? 0 : 1} mx={2} position="relative">
           <PostList
             url="/posts"
