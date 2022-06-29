@@ -1,4 +1,4 @@
-import {TouchableOpacity} from 'react-native';
+import {RefreshControl, TouchableOpacity} from 'react-native';
 import React, {useCallback, useContext, useEffect} from 'react';
 import {Avatar, Box, Button, FlatList, Row, Text} from 'native-base';
 import {useNavigation} from '@react-navigation/native';
@@ -7,6 +7,7 @@ import {http, numConverter} from '../services';
 import Spinner from './Spinner';
 import Alert from './Alert';
 import {AuthContext} from '../contexts/AuthContextProvider';
+import {paperTheme} from '../themes';
 
 const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [fetching, setFetching] = React.useState(true);
@@ -54,6 +55,14 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
             <Alert status="warning" text={emptyText} />
           </Box>
         ) : undefined
+      }
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          style={{zIndex: 1.2}}
+          colors={[paperTheme.colors.primary[500]]}
+          tintColor={paperTheme.colors.primary[500]}
+        />
       }
       keyExtractor={(u, i) => i + '' + u.id}
       onScrollEndDrag={() => fetchNextPage()}

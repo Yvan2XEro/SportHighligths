@@ -23,7 +23,7 @@ const UserInfos = ({
         flexWrap="wrap">
         <Avatar
           source={{
-            uri: 'https://cdn.pixabay.com/photo/2020/04/30/09/18/man-5112054__340.jpg',
+            uri: data?.avatar,
           }}
           size={90}
         />

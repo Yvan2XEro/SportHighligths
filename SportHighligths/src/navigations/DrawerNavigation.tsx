@@ -3,7 +3,9 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import AppNavigation from './AppNavigation';
 import DrawerContent from '../components/DrawerContent';
 import AuthStackNavigation from './AuthStackNavigation';
-import WithoutTabStackNavigator from './WithoutTabStackNavigator';
+import PostCommentsScreen from '../screens/PostCommentsScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import FavouritesScreen from '../screens/FavouritesScreen';
 
 const Drawer = createDrawerNavigator();
 const DrawerNavigation = () => {
@@ -17,10 +19,9 @@ const DrawerNavigation = () => {
         name="AuthStackNavigation"
         component={AuthStackNavigation}
       />
-      <Drawer.Screen
-        name="WithoutTabStackNavigator"
-        component={WithoutTabStackNavigator}
-      />
+      <Drawer.Screen name="EditProfileScreen" component={EditProfileScreen} />
+      <Drawer.Screen name="FavouritesScreen" component={FavouritesScreen} />
+      <Drawer.Screen name="PostCommentsScreen" component={PostCommentsScreen} />
     </Drawer.Navigator>
   );
 };

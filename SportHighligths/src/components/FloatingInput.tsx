@@ -61,6 +61,7 @@ const FloatingInput = ({
         variant="unstyled"
         backgroundColor="primary.500"
         p={1}
+        minH={45}
         m={0}>
         <Icon color="white" as={<Feather name="send" />} size={8} />
       </Button>

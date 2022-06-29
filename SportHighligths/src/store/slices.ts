@@ -6,7 +6,10 @@ export const backRouteSlice = createSlice({
     initialState: null,
     reducers: {
         saveRoute: (state: any, action: ReduxAction) => { return action.payload },
-        removeRoute: () => { return null }
+        removeRoute: () => {
+            console.log("removing....")
+            return null
+        }
     }
 });
 export const { removeRoute, saveRoute } = backRouteSlice.actions

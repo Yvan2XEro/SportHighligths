@@ -38,8 +38,8 @@ const PostList = ({
 
   const fetchNextPage = useCallback(
     async (withLoader = true) => {
+      console.log('yoooo');
       if (nextUrl) {
-        console.log('yoo');
         if (withLoader) setFetching(true);
         http
           .get(nextUrl)

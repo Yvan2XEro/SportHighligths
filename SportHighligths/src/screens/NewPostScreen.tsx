@@ -1,17 +1,7 @@
 import {Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  Alert,
-  Box,
-  FlatList,
-  Icon,
-  Input,
-  Pressable,
-  Row,
-  Text,
-} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import React, {useCallback, useContext, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {Box, FlatList, Icon, Input, Pressable, Row, Text} from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {MediaPickable} from '../types';
@@ -26,8 +16,6 @@ import BackButton from '../components/BackButton';
 const NewPostScreen = () => {
   const [medias, setMedias] = React.useState<MediaPickable[]>([]);
   const [comment, setComment] = React.useState('');
-
-  const navigation = useNavigation();
 
   const handlePublish = useCallback(async () => {
     const fd = new FormData();
@@ -44,13 +32,12 @@ const NewPostScreen = () => {
         console.log(response);
       })
       .catch(err => {
-        if (err.response.data) console.error(err.response.data);
-        else console.warn('yoo\n', err.response);
+        console.error(err.response.status);
       });
   }, [medias, comment, http]);
   return (
     <Box>
-      <Header navigation={navigation} onPublish={handlePublish} />
+      <Header onPublish={handlePublish} />
 
       <ImagesViewerContextProvider>
         <ImgPickerWrapper
@@ -66,13 +53,7 @@ const NewPostScreen = () => {
 
 export default NewPostScreen;
 
-export const Header = ({
-  navigation,
-  onPublish,
-}: {
-  navigation: NavigationProp<any>;
-  onPublish: () => void;
-}) => {
+export const Header = ({onPublish}: {onPublish: () => void}) => {
   return (
     <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
       <BackButton />

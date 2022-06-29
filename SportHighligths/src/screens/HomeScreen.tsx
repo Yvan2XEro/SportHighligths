@@ -148,9 +148,9 @@ export const SearchInput = ({
   };
 
   const handleClose = () => {
+    setTimeout(onCloseSearching, ANIMATION_DURATION);
     setSearchinActive(sa => (focusedInput ? sa : false));
     setFocusedInput(focusedInput => !focusedInput);
-    setTimeout(onCloseSearching, ANIMATION_DURATION);
   };
 
   useFocusEffect(
@@ -207,7 +207,7 @@ export const SearchInput = ({
                 },
               }
         }
-        style={[{zIndex: 555555555}]}>
+        style={[{zIndex: 1.5}]}>
         <Row alignItems="center" bgColor="white" borderRadius={8} mx={2} px={1}>
           <Icon
             color="primary.500"
@@ -264,7 +264,7 @@ export const SearchInput = ({
             right: 0,
             backgroundColor: paperTheme.colors.primary[500],
             opacity: 1,
-            zIndex: 111111,
+            zIndex: 1.4,
             paddingTop: 60,
           }}>
           <Text></Text>

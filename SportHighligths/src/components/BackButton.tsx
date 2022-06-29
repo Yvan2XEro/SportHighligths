@@ -14,13 +14,13 @@ const BackButton = ({prevRoute}: {prevRoute?: string}) => {
       backgroundColor="gray.300"
       borderRadius={15}
       onPress={() => {
-        if (!prevRoute)
-          if (backRoute === null) navigation.goBack();
-          else {
-            navigation.navigate(backRoute);
-            dispatch(removeRoute);
-          }
-        else navigation.navigate(prevRoute as never);
+        if (prevRoute) return navigation.navigate(prevRoute as never);
+        if (backRoute === null) navigation.goBack();
+        else {
+          let r = {...backRoute};
+          dispatch(removeRoute());
+          navigation.navigate(r);
+        }
       }}>
       <Icon
         color="primary.500"

@@ -18,11 +18,7 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
       <Box position="relative" py={10} bgColor="primary.500" flex={0.25}>
         <Pressable
           mx={2}
-          onPress={() =>
-            navigation.navigate('WithoutTabStackNavigator', {
-              screen: 'EditProfileScreen',
-            })
-          }>
+          onPress={() => navigation.navigate('EditProfileScreen')}>
           <UserInfos showPubsCount={false} data={user} />
           <Text textAlign="center" fontWeight="700" color="white" fontSize="md">
             {user?.firstName} {user?.lastName}
@@ -41,6 +37,7 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
         <CustomDrawerItem
           label="Mes equipes favoris"
           icon={<Ionicons name="star" />}
+          onpress={() => navigation.navigate('FavouritesScreen')}
         />
         <CustomDrawerItem
           label="Mes recomandations"
