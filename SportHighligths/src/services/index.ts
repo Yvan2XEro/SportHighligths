@@ -6,3 +6,4 @@ export const isValidEmail = (email: string) => {
 
 
 export { numConverter, formatDate, textSice, sleep } from './utils';
+export { notificationManager } from './notificationManager'
