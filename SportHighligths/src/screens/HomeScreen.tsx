@@ -16,7 +16,7 @@ import {paperTheme} from '../themes';
 import {useFocusEffect} from '@react-navigation/native';
 import {notificationManager} from '../services';
 import PushNotification from 'react-native-push-notification';
-import NavigationBar from 'react-native-navbar-color';
+// import NavigationBar from 'react-native-navbar-color';
 
 const HomeScreen = ({navigation}: any) => {
   const [isSearching, setIsSearching] = React.useState(false);
@@ -27,7 +27,7 @@ const HomeScreen = ({navigation}: any) => {
     outputRange: [0, -45],
   });
   React.useEffect(() => {
-    NavigationBar.setBackgroundColor('#fff');
+    // NavigationBar.setBackgroundColor('#fff');
     PushNotification.localNotification({
       title: 'Notification',
       message: 'My Notification Message',
