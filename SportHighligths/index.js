@@ -2,7 +2,7 @@
  * @format
  */
 
-import { AppRegistry } from 'react-native';
+import { AppRegistry, Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import App from './App';
 import { name as appName } from './app.json';
@@ -21,12 +21,13 @@ PushNotification.configure({
         sound: true,
     },
     popInitialNotification: true,
-    requestPermissions: true,
+    requestPermissions: Platform.OS === 'ios',
 });
 PushNotification.createChannel(
     {
         channelId: 'fcm_fallback_notification_channel', // (required)
         channelName: 'Channel', // (required)
+
     },
     (created) => console.log(`createChannel returned '${created}`),
 );

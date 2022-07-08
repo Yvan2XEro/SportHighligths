@@ -16,7 +16,6 @@ import {paperTheme} from '../themes';
 import {useFocusEffect} from '@react-navigation/native';
 import {notificationManager} from '../services';
 import PushNotification from 'react-native-push-notification';
-// import NavigationBar from 'react-native-navbar-color';
 
 const HomeScreen = ({navigation}: any) => {
   const [isSearching, setIsSearching] = React.useState(false);
