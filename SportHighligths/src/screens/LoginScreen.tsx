@@ -1,5 +1,5 @@
 import {Box, Button, Icon, Input, Pressable, Row, Text} from 'native-base';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -9,6 +9,7 @@ import {AuthContext} from '../contexts/AuthContextProvider';
 import {isValidEmail} from '../services';
 import Alert from '../components/Alert';
 import * as Animatable from 'react-native-animatable';
+import {useSelector} from 'react-redux';
 
 const LoginScreen = ({navigation}: any) => {
   const {login} = useContext(AuthContext);
@@ -17,6 +18,13 @@ const LoginScreen = ({navigation}: any) => {
   const [securePassword, setSecurePassword] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [alertError, setAlertError] = React.useState('');
+
+  const firstUse = useSelector(
+    ({firsrtUse}: {firsrtUse: boolean}) => firsrtUse,
+  );
+
+  React.useEffect(() => {}, [firstUse]);
+
   const submit = React.useCallback(async () => {
     if (isValidEmail(email) && password.length > 6) {
       setSubmitting(true);

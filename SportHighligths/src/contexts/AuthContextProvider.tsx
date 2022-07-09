@@ -8,9 +8,12 @@ import {
   getRefreshToken,
   applyAuthTokenInterceptor,
 } from 'react-native-axios-jwt';
-import {BASE_URL, http} from '../services';
+import {BASE_URL, http, localStorage} from '../services';
 import {RegisterUser} from '../types';
 import SplashScreen from 'react-native-splash-screen';
+import {FIRST_USE_KEY} from '../navigations/AuthStackNavigation';
+import {useDispatch, useSelector} from 'react-redux';
+import {setFirstUse} from '../store/slices';
 
 export const AuthContext = React.createContext({
   isLoggedIn: false,
@@ -19,15 +22,32 @@ export const AuthContext = React.createContext({
   register: async (data: RegisterUser) => new Promise(() => {}),
   logout: async () => {},
   fetchUser: async () => {},
+  setRefreshing: (v: boolean) => {},
   getAccessToken,
   refreshing: false,
+  searchedFirstUse: false,
   getRefreshToken,
   setUser: (u: any) => {},
 });
 const AuthContextProvider = ({children}: any) => {
+  const dispatch = useDispatch();
+  const firstUse = useSelector(
+    ({firsrtUse}: {firsrtUse: boolean}) => firsrtUse,
+  );
+
   const [user, setUser] = React.useState(null as any);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(true);
+  const [searchedFirstUse, setSearchedFirstUse] = React.useState(false);
+
+  React.useEffect(() => {
+    (async () => {
+      const fu = JSON.parse((await localStorage.get(FIRST_USE_KEY)) || 'true');
+      console.log('pppppppp', fu);
+      dispatch(setFirstUse(fu));
+      setSearchedFirstUse(true);
+    })();
+  }, []);
 
   const login = React.useCallback(async (email: string, password: string) => {
     const response = axios.post(`${BASE_URL}/auth/login`, {email, password});
@@ -102,10 +122,14 @@ const AuthContextProvider = ({children}: any) => {
         await refresh(refreshToken);
         setRefreshing(false);
       } else {
-        SplashScreen.hide();
+        if (searchedFirstUse) SplashScreen.hide();
       }
     })();
   }, []);
+
+  React.useEffect(() => {
+    if (searchedFirstUse) SplashScreen.hide();
+  }, [searchedFirstUse]);
 
   React.useEffect(() => {
     applyAuthTokenInterceptor(http, {requestRefresh: refresh});
@@ -128,7 +152,7 @@ const AuthContextProvider = ({children}: any) => {
   }, []);
 
   React.useEffect(() => {
-    console.log(isLoggedIn);
+    // console.log(isLoggedIn);
     if (isLoggedIn === true) {
       fetchUser();
     } else {
@@ -140,15 +164,17 @@ const AuthContextProvider = ({children}: any) => {
     <AuthContext.Provider
       value={{
         user,
-        refreshing,
-        isLoggedIn,
         login,
         logout,
         setUser,
         register,
         fetchUser,
+        isLoggedIn,
+        refreshing,
+        setRefreshing,
         getAccessToken,
         getRefreshToken,
+        searchedFirstUse,
       }}>
       {children}
     </AuthContext.Provider>

@@ -1,11 +1,11 @@
 
 import { configureStore, createSlice } from '@reduxjs/toolkit'
-import { ReduxAction } from '../types'
-import { backRouteSlice } from './slices'
+import { backRouteSlice, firsrtUseSlice } from './slices'
 
 
 export const store = configureStore({
     reducer: {
-        route: backRouteSlice.reducer
+        route: backRouteSlice.reducer,
+        firstUse: firsrtUseSlice.reducer
     }
 })

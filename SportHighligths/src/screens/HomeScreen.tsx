@@ -26,7 +26,6 @@ const HomeScreen = ({navigation}: any) => {
     outputRange: [0, -45],
   });
   React.useEffect(() => {
-    // NavigationBar.setBackgroundColor('#fff');
     PushNotification.localNotification({
       title: 'Notification',
       message: 'My Notification Message',

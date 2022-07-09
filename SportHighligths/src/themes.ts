@@ -5,7 +5,7 @@ export const tabsTheme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'blue',
+        primary: '#fff',
     },
 };
 
@@ -16,16 +16,16 @@ export const paperTheme = extendTheme({
         ...theme.colors,
         // Add new color
         primary: {
-            50: '#FEE0EF',
-            100: '#FCC0DE',
-            200: '#FBA0CD',
-            300: '#F980BC',
-            400: '#F6409B',
-            500: 'blue',
-            600: 'blue',
-            700: '#DA0C91',
-            800: '#D11098',
-            900: '#A028C7',
+            50: '#8eb7fa',
+            100: '#6ca1f8',
+            200: '#4a8bf6',
+            300: '#2875f5',
+            400: '#0a60ef',
+            500: '#0952cd',
+            600: '#0745aa',
+            700: '#063788',
+            800: '#042966',
+            900: '#031b44',
         },
     }
 });

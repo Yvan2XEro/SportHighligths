@@ -1,5 +1,6 @@
 import moment from "moment";
 import PushNotification from "react-native-push-notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const numConverter = (n: number, d: number = 2) => {
@@ -42,6 +43,10 @@ export function uniqueid(length = 16): string {
 
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function onlyUnique(value: any, index: number, self: any[]) {
+    return self.indexOf(value) === index;
 }
 
 // export function notify() {
@@ -96,3 +101,19 @@ export function sleep(ms: number) {
 //         repeatType: "day",
 //     })
 // }
+
+export const localStorage = {
+    get(key: string) {
+        return AsyncStorage.getItem(key);
+    },
+    set(key: string, value: string) {
+        return AsyncStorage.setItem(key, value);
+    },
+    remove(key: string) {
+        return AsyncStorage.removeItem(key);
+    },
+    clear() {
+        return AsyncStorage.clear()
+    }
+}
+

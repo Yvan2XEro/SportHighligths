@@ -31,7 +31,6 @@ import {useToast} from 'react-native-toast-notifications';
 import ImagesViewerContextProvider, {
   ImagesViewerContext,
 } from '../contexts/ImagesViewerContextProvider';
-import {ImageSource} from 'react-native-image-viewing/dist/@types';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uniqueid} from '../services/utils';
 
@@ -81,6 +80,13 @@ const EditProfileScreen = () => {
         });
     }
   }, [oldPassword, newPassword, u, user]);
+
+  const handleSetAvatar = useCallback(() => {
+    fetchUser();
+    onClose();
+  }, []);
+
+  useEffect(() => setU(user), [user]);
   return (
     <View flex={1}>
       <Header submitting={submitting} onSubmit={onSubmit} />
@@ -163,7 +169,10 @@ const EditProfileScreen = () => {
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <ImagesViewerContextProvider>
           <Actionsheet.Content>
-            <ImageActions profilUrl={user.avatar} />
+            <ImageActions
+              profilUrl={user.avatar}
+              onSetProfile={handleSetAvatar}
+            />
           </Actionsheet.Content>
         </ImagesViewerContextProvider>
         <Actionsheet.Item onPress={onClose}>Fermer</Actionsheet.Item>
@@ -216,28 +225,47 @@ const AvatarWrapper = ({user, onPress}: {user: User; onPress: () => void}) => {
   );
 };
 
-const ImageActions = ({profilUrl}: {profilUrl: string}) => {
+type IImageActionsProps = {
+  profilUrl: string;
+  onSetProfile: () => void;
+};
+const ImageActions = ({profilUrl, onSetProfile}: IImageActionsProps) => {
   const {openImagesViewer, closeImagesViewer} = useContext(ImagesViewerContext);
   const toast = useToast();
 
   const [img, setImg] = useState<MediaPickable>();
   const [loading, setLoading] = useState(false);
 
+  const onPicked = useCallback(pickedImage => {
+    setImg({
+      uri: pickedImage.path,
+      type: pickedImage.mime,
+      name: uniqueid() + '.' + pickedImage.path.split('.').slice(-1)[0],
+    });
+  }, []);
+
   const pickImage = useCallback(() => {
     ImagePicker.openPicker({
+      multiple: false,
+      cropping: true,
+      waitAnimationEnd: false,
+      sortOrder: 'desc',
+      includeExif: true,
+      forceJpg: true,
+      mediaType: 'photo',
+    }).then(onPicked);
+  }, [ImagePicker, openImagesViewer]);
+
+  const pickWithCamera = useCallback(() => {
+    ImagePicker.openCamera({
+      cropping: true,
       multiple: false,
       waitAnimationEnd: false,
       sortOrder: 'desc',
       includeExif: true,
       forceJpg: true,
       mediaType: 'photo',
-    }).then(pickedImage => {
-      setImg({
-        uri: pickedImage.path,
-        type: pickedImage.mime,
-        name: uniqueid() + '.' + pickedImage.path.split('.').slice(-1)[0],
-      });
-    });
+    }).then(onPicked);
   }, [ImagePicker, openImagesViewer]);
 
   const handleSet = async () => {
@@ -251,12 +279,12 @@ const ImageActions = ({profilUrl}: {profilUrl: string}) => {
           accept: 'application/json, text/plain',
         },
       };
-      console.log('.....');
       http
         .put('auth/set-avatar', fd, conf)
-        .then(() => {
+        .then(response => {
           toast.show('SUCCESS');
           setLoading(false);
+          onSetProfile();
         })
         .catch(() => {
           setLoading(false);
@@ -275,6 +303,15 @@ const ImageActions = ({profilUrl}: {profilUrl: string}) => {
             size={25}
           />
           <Text ml={2}>Voir la photo</Text>
+        </Pressable>
+      </Actionsheet.Item>
+      <Actionsheet.Item>
+        <Pressable
+          onPress={pickWithCamera}
+          flexDirection="row"
+          alignItems="center">
+          <Icon as={<MaterialCommunityIcons name="camera" />} size={25} />
+          <Text ml={2}>Prendre une photo</Text>
         </Pressable>
       </Actionsheet.Item>
       <Actionsheet.Item>
@@ -304,6 +341,7 @@ const ImageActions = ({profilUrl}: {profilUrl: string}) => {
         <Button
           onPress={handleSet}
           isLoading={loading}
+          minW={130}
           leftIcon={<Icon as={<MaterialCommunityIcons name="check" />} />}
           ml={2}>
           UTILISER

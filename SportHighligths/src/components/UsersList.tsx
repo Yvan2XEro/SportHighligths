@@ -51,6 +51,7 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   return (
     <FlatList
       data={users}
+      showsVerticalScrollIndicator={false}
       ListHeaderComponent={
         !fetching && users.length === 0 ? (
           <Box m={3} flexShrink={1}>

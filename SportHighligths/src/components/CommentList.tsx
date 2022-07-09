@@ -76,6 +76,7 @@ const CommentList = ({
   return (
     <>
       <FlatList
+        showsVerticalScrollIndicator={false}
         mb={10}
         data={comments}
         ListHeaderComponent={
