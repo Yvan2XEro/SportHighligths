@@ -40,11 +40,6 @@ const App = () => {
 export default App;
 
 const AlternateNavigation = () => {
-  const {isLoggedIn, refreshing} = useContext(AuthContext);
-
-  return isLoggedIn && !refreshing ? (
-    <DrawerNavigation />
-  ) : (
-    <AuthStackNavigation />
-  );
+  const {isLoggedIn} = useContext(AuthContext);
+  return isLoggedIn ? <DrawerNavigation /> : <AuthStackNavigation />;
 };

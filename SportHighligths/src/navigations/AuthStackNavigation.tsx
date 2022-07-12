@@ -1,19 +1,21 @@
+import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {Center, Text} from 'native-base';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import Spinner from '../components/Spinner';
+import {AuthContext} from '../contexts/AuthContextProvider';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
+import WelcomeScreen, {FIRST_USE_KEY} from '../screens/WelcomeScreen';
 import {localStorage} from '../services';
-import {setFirstUse} from '../store/slices';
 
-export const FIRST_USE_KEY = 'FIRST_USE_KEY';
 const Stack = createNativeStackNavigator();
 const AuthStackNavigation = () => {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName="WelcomeScreen">
+      initialRouteName="LoadingScreen">
+      <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
@@ -22,3 +24,27 @@ const AuthStackNavigation = () => {
 };
 
 export default AuthStackNavigation;
+
+const LoadingScreen = () => {
+  const navigation = useNavigation();
+  const {isLoggedIn} = useContext(AuthContext);
+  useEffect(() => {
+    (async () => checkIfFirstTimeLoad())();
+  }, []);
+  const checkIfFirstTimeLoad = useCallback(async () => {
+    const fu = await localStorage.get(FIRST_USE_KEY);
+    if (fu === null) {
+      console.log('callledd1....................\n\n');
+      navigation.navigate('WelcomeScreen' as never);
+    } else {
+      console.log('callledd222....................\n\n');
+      if (!isLoggedIn) navigation.navigate('LoginScreen' as never);
+    }
+  }, []);
+  return (
+    <Center h="100%" justifyContent="center" alignItems="center">
+      <Spinner size="lg" text="" />
+      <Text fontSize="xl">Veuillez patienter!</Text>
+    </Center>
+  );
+};

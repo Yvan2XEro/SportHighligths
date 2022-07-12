@@ -8,17 +8,14 @@ import {
   StatusBar,
   Text,
 } from 'native-base';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Dimensions} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {localStorage, onlyUnique} from '../services';
-import {setFirstUse} from '../store/slices';
+import {onlyUnique} from '../services';
 import {paperTheme} from '../themes';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {FIRST_USE_KEY} from '../navigations/AuthStackNavigation';
 import {useNavigation} from '@react-navigation/native';
-import {AuthContext} from '../contexts/AuthContextProvider';
 
+export const FIRST_USE_KEY = 'FIRST_USE_KEY';
 const slides = [
   {
     title: 'Screen 1',
@@ -47,24 +44,15 @@ const slides = [
 ];
 const {width, height} = Dimensions.get('screen');
 const WelcomeScreen = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const firstUse = useSelector(({firstUse}: {firstUse: boolean}) => firstUse);
-  const {searchedFirstUse} = useContext(AuthContext);
 
   const handleDone = async () => {
-    localStorage.set(FIRST_USE_KEY, 'false').then(() => {
-      dispatch(setFirstUse(false));
-      navigation.navigate('LoginScreen' as never);
-    });
+    navigation.navigate('LoginScreen' as never);
   };
-  useEffect(() => {
-    if (!firstUse) navigation.navigate('LoginScreen' as never);
-  }, [firstUse]);
   return (
     <>
       <StatusBar hidden />
-      {searchedFirstUse && firstUse && <Slides handleDone={handleDone} />}
+      <Slides handleDone={handleDone} />
     </>
   );
 };

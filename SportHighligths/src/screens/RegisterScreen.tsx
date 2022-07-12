@@ -7,8 +7,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native';
 import {AuthContext} from '../contexts/AuthContextProvider';
-import {isValidEmail} from '../services';
+import {isValidEmail, localStorage} from '../services';
 import Alert from '../components/Alert';
+import {FIRST_USE_KEY} from './WelcomeScreen';
 
 const RegisterScreen = ({navigation}: any) => {
   const {register} = useContext(AuthContext);
@@ -29,7 +30,9 @@ const RegisterScreen = ({navigation}: any) => {
       setSubmitting(true);
       setAlertError('');
       try {
-        await register({firstName, lastName, email, password});
+        await register({firstName, lastName, email, password}).then(() => {
+          localStorage.set(FIRST_USE_KEY, 'false').then(() => {});
+        });
       } catch (e: any) {
         console.error(e);
         if (e.response && e.response.status === 401) {

@@ -1,15 +1,14 @@
 import {Box, Button, Icon, Input, Pressable, Row, Text} from 'native-base';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native';
 import {AuthContext} from '../contexts/AuthContextProvider';
-import {isValidEmail} from '../services';
+import {isValidEmail, localStorage} from '../services';
 import Alert from '../components/Alert';
-import * as Animatable from 'react-native-animatable';
-import {useSelector} from 'react-redux';
+import {FIRST_USE_KEY} from './WelcomeScreen';
 
 const LoginScreen = ({navigation}: any) => {
   const {login} = useContext(AuthContext);
@@ -19,18 +18,14 @@ const LoginScreen = ({navigation}: any) => {
   const [submitting, setSubmitting] = React.useState(false);
   const [alertError, setAlertError] = React.useState('');
 
-  const firstUse = useSelector(
-    ({firsrtUse}: {firsrtUse: boolean}) => firsrtUse,
-  );
-
-  React.useEffect(() => {}, [firstUse]);
-
   const submit = React.useCallback(async () => {
     if (isValidEmail(email) && password.length > 6) {
       setSubmitting(true);
       setAlertError('');
       try {
-        await login(email, password);
+        await login(email, password).then(() => {
+          localStorage.set(FIRST_USE_KEY, 'false').then(() => {});
+        });
       } catch (e: any) {
         console.error(e);
         if (e.response && e.response.status === 401) {
