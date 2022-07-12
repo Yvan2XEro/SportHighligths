@@ -1,10 +1,19 @@
-import {Box, Button, Icon, Input, Pressable, Row, Text} from 'native-base';
+import {
+  Box,
+  Button,
+  Icon,
+  Image,
+  Input,
+  Pressable,
+  Row,
+  Text,
+} from 'native-base';
 import React, {useContext} from 'react';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from 'react-native';
+import {ImageBackground, TouchableOpacity} from 'react-native';
 import {AuthContext} from '../contexts/AuthContextProvider';
 import {isValidEmail, localStorage} from '../services';
 import Alert from '../components/Alert';
@@ -41,11 +50,13 @@ const LoginScreen = ({navigation}: any) => {
   }, [email, password]);
 
   return (
-    <>
+    <ImageBackground
+      style={{flex: 1}}
+      source={require('../assets/BgAuth2.png')}>
       <Box px={10} flex={0.1}>
         <Text
           fontWeight="bold"
-          color="primary.500"
+          color="white"
           textTransform="uppercase"
           fontSize={22}
           ml="auto">
@@ -99,7 +110,7 @@ const LoginScreen = ({navigation}: any) => {
               SE CONNECTER
             </Button>
             <Box ml={2}>
-              <Text>Mot de passe oublie?</Text>
+              <Text color="white">Mot de passe oublie?</Text>
             </Box>
           </Row>
         </Box>
@@ -107,14 +118,18 @@ const LoginScreen = ({navigation}: any) => {
       <Box flex={0.1} alignSelf="center">
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Row alignItems="center">
-            <Text textTransform="uppercase" fontWeight="700">
-              Creer un compte maintenant!
+            <Text textTransform="uppercase" fontWeight="700" color="white">
+              Creer un compte maintenant.
             </Text>
-            <Icon as={<MaterialIcons name="chevron-right" />} size={8} />
+            <Icon
+              color="white"
+              as={<MaterialIcons name="chevron-right" />}
+              size={8}
+            />
           </Row>
         </TouchableOpacity>
       </Box>
-    </>
+    </ImageBackground>
   );
 };
 
@@ -139,10 +154,14 @@ export const TextInput = ({
 }) => {
   return (
     <Box mb={2}>
-      <Text textTransform="uppercase" fontWeight="bold" letterSpacing={0.7}>
+      <Text
+        color="white"
+        textTransform="uppercase"
+        fontWeight="bold"
+        letterSpacing={0.7}>
         {label}
       </Text>
-      <Row backgroundColor="#fff" borderRadius={10} px={2} alignItems="center">
+      <Row backgroundColor="white" borderRadius={10} px={2} alignItems="center">
         <Icon as={icon} size={6} />
         <Input
           value={value}

@@ -5,7 +5,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from 'react-native';
+import {ImageBackground, TouchableOpacity} from 'react-native';
 import {AuthContext} from '../contexts/AuthContextProvider';
 import {isValidEmail, localStorage} from '../services';
 import Alert from '../components/Alert';
@@ -50,11 +50,13 @@ const RegisterScreen = ({navigation}: any) => {
     }
   }, [firstName, lastName, email, password]);
   return (
-    <>
+    <ImageBackground
+      style={{flex: 1}}
+      source={require('../assets/BgAuth2.png')}>
       <Box px={10} flex={0.1}>
         <Text
           fontWeight="bold"
-          color="primary.500"
+          color="white"
           textTransform="uppercase"
           fontSize={22}
           ml="auto">
@@ -137,14 +139,18 @@ const RegisterScreen = ({navigation}: any) => {
       <Box flex={0.1} alignSelf="center">
         <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
           <Row alignItems="center">
-            <Text textTransform="uppercase" fontWeight="700">
+            <Text color="white" textTransform="uppercase" fontWeight="700">
               SE CONNECTER
             </Text>
-            <Icon as={<MaterialIcons name="chevron-right" />} size={8} />
+            <Icon
+              color="white"
+              as={<MaterialIcons name="chevron-right" />}
+              size={8}
+            />
           </Row>
         </TouchableOpacity>
       </Box>
-    </>
+    </ImageBackground>
   );
 };
 
