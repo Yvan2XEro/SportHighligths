@@ -226,7 +226,7 @@ const ImgPickerWrapper = ({
                   <Icon
                     as={<MaterialCommunityIcons name="camera" />}
                     size={50}
-                    color="primary.200"
+                    color="primary.500"
                   />
                 </Pressable>
                 <Pressable
@@ -236,7 +236,7 @@ const ImgPickerWrapper = ({
                   <Icon
                     as={<MaterialCommunityIcons name="image-plus" />}
                     size={50}
-                    color="primary.200"
+                    color="primary.500"
                   />
                 </Pressable>
                 <Pressable
@@ -256,7 +256,7 @@ const ImgPickerWrapper = ({
                       <MaterialCommunityIcons name="notification-clear-all" />
                     }
                     size={50}
-                    color={medias.length > 0 ? 'error.600' : 'gray.700'}
+                    color="primary.500"
                   />
                 </Pressable>
               </Row>
