@@ -75,15 +75,18 @@ const AuthContextProvider = ({children}: any) => {
     }
   }, []);
 
-  const register = React.useCallback(async (data: RegisterUser) => {
-    const response = axios.post(`${BASE_URL}/auth/register`, data);
-    if ((await response).status === 201 || (await response).status === 200) {
-      await login(data.email, data.password);
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(response);
-    }
-  }, []);
+  const register = React.useCallback(
+    async (data: RegisterUser) => {
+      const response = await axios.post(`${BASE_URL}/auth/register`, data);
+      if (response.status === 201 || response.status === 200) {
+        await login(data.email, data.password);
+        return Promise.resolve(response);
+      } else {
+        return Promise.reject(response);
+      }
+    },
+    [axios],
+  );
 
   const fetchUser = React.useCallback(async () => {
     console.log('get user');

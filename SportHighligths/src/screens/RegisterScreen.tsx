@@ -30,11 +30,16 @@ const RegisterScreen = ({navigation}: any) => {
       setSubmitting(true);
       setAlertError('');
       try {
-        await register({firstName, lastName, email, password}).then(() => {
-          localStorage.set(FIRST_USE_KEY, 'false').then(() => {});
-        });
+        await register({firstName, lastName, email, password})
+          .then(() => {
+            localStorage.set(FIRST_USE_KEY, 'false').then(() => {});
+          })
+          .catch(e => {
+            if (!!e.response.data?.email)
+              setAlertError('Un utilisateur utilise deja cet adresse email.');
+          });
       } catch (e: any) {
-        console.error(e);
+        console.log(e);
         if (e.response && e.response.status === 401) {
           setAlertError('Identifiants incorrects');
         }
@@ -114,6 +119,11 @@ const RegisterScreen = ({navigation}: any) => {
                 }
               />
             </Pressable>
+          }
+          error={
+            password.length > 0 && password.length < 6
+              ? 'Le mot de passe doit faire au moin 6 caracteres.'
+              : ''
           }
         />
         <Box mt={2}>

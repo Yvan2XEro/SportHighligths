@@ -117,3 +117,16 @@ export const localStorage = {
     }
 }
 
+type INotifParams = {
+    title: string,
+    message: string
+}
+export const notify = ({ title, message }: INotifParams) => {
+    PushNotification.localNotification({
+        title,
+        message,
+        playSound: true,
+        showWhen: true,
+        channelId: 'fcm_fallback_notification_channel',
+    })
+}

@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {
   Box,
   Button,
+  Center,
   FlatList,
   Icon,
   Input,
@@ -22,6 +23,7 @@ import ImagesViewerContextProvider, {
 } from '../contexts/ImagesViewerContextProvider';
 import BackButton from '../components/BackButton';
 import {useToast} from 'react-native-toast-notifications';
+import {paperTheme} from '../themes';
 
 const NewPostScreen = () => {
   const {show} = useToast();
@@ -70,12 +72,8 @@ const NewPostScreen = () => {
       });
   }, [medias, comment, http]);
   return (
-    <Box>
-      <Header
-        valid={medias.length > 0 && comment.length > 0}
-        onPublish={handlePublish}
-        loading={loading}
-      />
+    <Box flex={1}>
+      <Header />
 
       <ImagesViewerContextProvider>
         <ImgPickerWrapper
@@ -83,6 +81,9 @@ const NewPostScreen = () => {
           setMedias={setMedias}
           comment={comment}
           setComment={setComment}
+          valid={medias.length > 0 && comment.length > 0}
+          onPublish={handlePublish}
+          loading={loading}
         />
       </ImagesViewerContextProvider>
     </Box>
@@ -91,15 +92,7 @@ const NewPostScreen = () => {
 
 export default NewPostScreen;
 
-export const Header = ({
-  onPublish,
-  loading,
-  valid,
-}: {
-  onPublish: () => void;
-  loading: boolean;
-  valid: boolean;
-}) => {
+export const Header = () => {
   return (
     <Row bgColor="primary.500" px={1} py={1} pr={2} alignItems="center">
       <BackButton />
@@ -112,13 +105,6 @@ export const Header = ({
           Nouvelle publication
         </Text>
       </Box>
-      <Button
-        disabled={!valid}
-        isLoading={loading}
-        ml="auto"
-        onPress={onPublish}>
-        PUBLIER
-      </Button>
     </Row>
   );
 };
@@ -146,11 +132,17 @@ const ImgPickerWrapper = ({
   setMedias: sm,
   comment,
   setComment,
+  valid,
+  onPublish,
+  loading,
 }: {
   medias: MediaPickable[];
   setMedias: (i: MediaPickable[]) => void;
   comment: string;
   setComment: (c: string) => void;
+  valid: boolean;
+  onPublish: () => void;
+  loading: boolean;
 }) => {
   const cleanupImages = useCallback(() => {
     ImagePicker.clean().catch((e: any) => {
@@ -220,58 +212,56 @@ const ImgPickerWrapper = ({
   const [animateDeleting, setAnimateDeleting] = useState(false);
   const {openImagesViewer} = useContext(ImagesViewerContext);
   return (
-    <Box>
-      <Box bgColor="primary.500">
-        <Row ml="auto" justifyContent="space-between">
-          <TouchableOpacity
-            style={{marginRight: 7}}
-            onPress={() => pickMediaWithCamera('photo', false)}>
-            <Icon
-              color="white"
-              as={<MaterialCommunityIcons name="camera" />}
-              size={8}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{marginRight: 7}}
-            onPress={() => pickExistingMedias('photo', false)}>
-            <Icon
-              color="white"
-              as={<MaterialCommunityIcons name="image-plus" />}
-              size={8}
-            />
-          </TouchableOpacity>
-          {medias.length > 0 && (
-            <TouchableOpacity
-              style={{marginRight: 7}}
-              onPress={() => {
-                setAnimateDeleting(true);
-                setTimeout(() => {
-                  cleanupImages();
-                  setMedias([]);
-                }, ANIMATION_DURATION);
-              }}>
-              <Icon
-                as={<MaterialCommunityIcons name="notification-clear-all" />}
-                size={8}
-                color="white"
-              />
-            </TouchableOpacity>
-          )}
-        </Row>
-      </Box>
-      <Box borderWidth={0.3} borderRadius={5} m={2}>
-        <Input
-          value={comment}
-          onChangeText={setComment}
-          variant="unstyled"
-          placeholder="Commentaire..."
-          multiline
-        />
-      </Box>
+    <Box position="relative" flex={1}>
       <Box>
         <FlatList
           data={medias}
+          ListHeaderComponent={
+            <Box>
+              <Row ml="auto" justifyContent="space-between">
+                <Pressable
+                  alignItems="center"
+                  mr={2}
+                  onPress={() => pickMediaWithCamera('photo', false)}>
+                  <Icon
+                    as={<MaterialCommunityIcons name="camera" />}
+                    size={50}
+                    color="primary.200"
+                  />
+                </Pressable>
+                <Pressable
+                  alignItems="center"
+                  mr={2}
+                  onPress={() => pickExistingMedias('photo', false)}>
+                  <Icon
+                    as={<MaterialCommunityIcons name="image-plus" />}
+                    size={50}
+                    color="primary.200"
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={
+                    medias.length > 0
+                      ? () => {
+                          setAnimateDeleting(true);
+                          setTimeout(() => {
+                            cleanupImages();
+                            setMedias([]);
+                          }, ANIMATION_DURATION);
+                        }
+                      : undefined
+                  }>
+                  <Icon
+                    as={
+                      <MaterialCommunityIcons name="notification-clear-all" />
+                    }
+                    size={50}
+                    color={medias.length > 0 ? 'error.600' : 'gray.700'}
+                  />
+                </Pressable>
+              </Row>
+            </Box>
+          }
           keyExtractor={(_, index) => '' + index}
           numColumns={4}
           renderItem={({item, index}) => {
@@ -298,6 +288,32 @@ const ImgPickerWrapper = ({
                           }
                         : undefined
                     }>
+                    <Animatable.View
+                      style={{zIndex: 1.1}}
+                      animation={{
+                        from: {
+                          opacity: 0,
+                          left: -100,
+                        },
+                        to: {
+                          opacity: 1,
+                          left: 0,
+                        },
+                      }}>
+                      <Pressable
+                        position="absolute"
+                        top={0}
+                        onPress={() =>
+                          setMedias(medias.filter(m => m.name !== item.name))
+                        }
+                        right={0}>
+                        <Icon
+                          as={<MaterialCommunityIcons name="close" />}
+                          color="danger.500"
+                          size={30}
+                        />
+                      </Pressable>
+                    </Animatable.View>
                     <Animatable.Image
                       key={index}
                       animation={{
@@ -325,8 +341,33 @@ const ImgPickerWrapper = ({
           }}
         />
       </Box>
+      <Row
+        width={width}
+        mx={3}
+        position="absolute"
+        bottom={3}
+        borderWidth={0.3}
+        borderRadius={5}>
+        <Input
+          value={comment}
+          flex={0.9}
+          onChangeText={setComment}
+          variant="unstyled"
+          placeholder="Dites quelque chose..."
+          multiline
+        />
+        <Button
+          disabled={!valid}
+          onPress={onPublish}
+          isLoading={loading}
+          flex={0.2}>
+          PUBLIER
+        </Button>
+      </Row>
     </Box>
   );
 };
+
+const {width} = Dimensions.get('screen');
 
 const ANIMATION_DURATION = 700;

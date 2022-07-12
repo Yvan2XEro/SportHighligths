@@ -330,20 +330,16 @@ const ImageActions = ({profilUrl, onSetProfile}: IImageActionsProps) => {
   ) : (
     <Box>
       <Image source={{uri: img.uri}} alt="Picked profile image" size={300} />
-      <Row mt={1}>
+      <Row alignSelf="center" mt={1}>
         <Button
           onPress={() => setImg(undefined)}
           disabled={loading}
-          leftIcon={<Icon as={<MaterialCommunityIcons name="close" />} />}
-          variant="subtle">
-          ANNULER
+          // leftIcon={<Icon as={<MaterialCommunityIcons name="close" />} />}
+          variant="outline"
+          borderColor="error.500">
+          <Text color="error.500">ANNULER</Text>
         </Button>
-        <Button
-          onPress={handleSet}
-          isLoading={loading}
-          minW={130}
-          leftIcon={<Icon as={<MaterialCommunityIcons name="check" />} />}
-          ml={2}>
+        <Button onPress={handleSet} isLoading={loading} minW={130} ml={2}>
           UTILISER
         </Button>
       </Row>

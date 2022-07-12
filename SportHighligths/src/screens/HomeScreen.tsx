@@ -14,8 +14,6 @@ import PostList from '../components/PostList';
 import * as Animatable from 'react-native-animatable';
 import {paperTheme} from '../themes';
 import {useFocusEffect} from '@react-navigation/native';
-import {notificationManager} from '../services';
-import PushNotification from 'react-native-push-notification';
 
 const HomeScreen = ({navigation}: any) => {
   const [isSearching, setIsSearching] = React.useState(false);
@@ -25,15 +23,7 @@ const HomeScreen = ({navigation}: any) => {
     inputRange: [0, 45],
     outputRange: [0, -45],
   });
-  React.useEffect(() => {
-    PushNotification.localNotification({
-      title: 'Notification',
-      message: 'My Notification Message',
-      playSound: true,
-      showWhen: true,
-      channelId: 'fcm_fallback_notification_channel',
-    });
-  }, []);
+
   return (
     <Box position="relative">
       <Animated.View style={{transform: [{translateY}], zIndex: 1.1}}>

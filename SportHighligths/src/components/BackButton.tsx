@@ -11,8 +11,9 @@ const BackButton = ({prevRoute}: {prevRoute?: string}) => {
   const dispatch = useDispatch();
   return (
     <Pressable
-      backgroundColor="gray.300"
-      borderRadius={15}
+      borderColor="gray.300"
+      borderRadius={6}
+      borderWidth={0.7}
       onPress={() => {
         if (prevRoute) return navigation.navigate(prevRoute as never);
         if (backRoute === null) navigation.goBack();
@@ -22,11 +23,7 @@ const BackButton = ({prevRoute}: {prevRoute?: string}) => {
           navigation.navigate(r);
         }
       }}>
-      <Icon
-        color="primary.500"
-        as={<MaterialIcons name="chevron-left" />}
-        size={8}
-      />
+      <Icon color="white" as={<MaterialIcons name="chevron-left" />} size={9} />
     </Pressable>
   );
 };
