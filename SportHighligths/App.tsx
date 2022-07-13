@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,6 +12,7 @@ import AuthStackNavigation from './src/navigations/AuthStackNavigation';
 import {Provider as ReduxProvider} from 'react-redux';
 import {ToastProvider} from 'react-native-toast-notifications';
 import {store} from './src/store';
+
 const App = () => {
   return (
     <NativeBaseProvider theme={paperTheme}>
@@ -41,5 +42,6 @@ export default App;
 
 const AlternateNavigation = () => {
   const {isLoggedIn} = useContext(AuthContext);
+
   return isLoggedIn ? <DrawerNavigation /> : <AuthStackNavigation />;
 };

@@ -46,13 +46,19 @@ const Post = ({
         <Row justifyContent="space-between">
           <Row alignContent="center">
             <Avatar source={{uri: post.author.avatar}} size={45} />
-            <Text color="primary.500" ml={3} fontSize={18} fontWeight="bold">
+            <Text
+              color="primary.500"
+              ml={3}
+              fontSize={18}
+              fontFamily="ProductSans-Bold">
               {post.author.firstName} {post.author.lastName}
             </Text>
           </Row>
-          <Text>{formatDate(post.createdAt)}</Text>
+          <Text fontFamily="ProductSans-Regular">
+            {formatDate(post.createdAt)}
+          </Text>
         </Row>
-        <Box>{post.content}</Box>
+        <Text fontFamily="ProductSans-Regular">{post.content}</Text>
         <ViewableImage images={post.images} />
         <Box mt={2} flexDirection="row">
           <Pressable

@@ -27,7 +27,7 @@ export const paperTheme = extendTheme({
             800: '#042966',
             900: '#031b44',
         },
-    }
+    },
 });
 
 

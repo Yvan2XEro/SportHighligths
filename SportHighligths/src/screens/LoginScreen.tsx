@@ -18,6 +18,7 @@ import {AuthContext} from '../contexts/AuthContextProvider';
 import {isValidEmail, localStorage} from '../services';
 import Alert from '../components/Alert';
 import {FIRST_USE_KEY} from './WelcomeScreen';
+import {paperTheme} from '../themes';
 
 const LoginScreen = ({navigation}: any) => {
   const {login} = useContext(AuthContext);
@@ -143,6 +144,7 @@ export const TextInput = ({
   onChangeText,
   error,
   right,
+  labelColor = 'white',
 }: {
   icon: any;
   label: string;
@@ -151,13 +153,14 @@ export const TextInput = ({
   onChangeText: (text: string) => void;
   error?: string | undefined;
   right?: any;
+  labelColor?: string;
 }) => {
   return (
     <Box mb={2}>
       <Text
-        color="white"
+        color={labelColor}
         textTransform="uppercase"
-        fontWeight="bold"
+        fontFamily="ProductSans-Regular"
         letterSpacing={0.7}>
         {label}
       </Text>

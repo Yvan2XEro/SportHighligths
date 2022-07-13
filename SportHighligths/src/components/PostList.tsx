@@ -5,6 +5,7 @@ import {http} from '../services';
 import {paperTheme} from '../themes';
 import {Post as IPost} from '../types';
 import Alert from './Alert';
+import NoData from './NoData';
 import Post from './Post';
 import Spinner from './Spinner';
 
@@ -61,10 +62,11 @@ const PostList = ({
       data={posts}
       ListHeaderComponent={
         !fetching && posts.length === 0 ? (
-          <Box my={3} flexShrink={1}>
-            <Alert status="warning" text={emptyText} />
-          </Box>
-        ) : undefined
+          <NoData text={emptyText} />
+        ) : // <Box my={3} flexShrink={1}>
+        //   <Alert status="warning" text={emptyText} />
+        // </Box>
+        undefined
       }
       contentContainerStyle={onScroll ? {marginTop: 43} : undefined}
       keyExtractor={(p, i) => i + '' + p.id}

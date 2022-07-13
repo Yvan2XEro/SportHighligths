@@ -44,7 +44,7 @@ const PostCommentsScreen = () => {
           <View mb={65} marginX={2}>
             <CommentList
               url={`/posts/${post.id}/comments`}
-              emptyText="Soyes le premier a commenter ce contenu!"
+              emptyText="Soyez la premiere peresonne a commenter!"
               setRefetchFirstsComments={setRefetchFirstsComments}
               refetchFirstsComments={refetchFirstsComments}
               commentsCount={post.commentsCount}

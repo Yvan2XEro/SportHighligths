@@ -75,7 +75,9 @@ const DrawerContent = ({navigation}: {navigation: any}) => {
               {cancelable: false},
             );
           }}>
-          <Text>Logout</Text>
+          <Text fontFamily="ProductSans-Bold" fontSize={17}>
+            Logout
+          </Text>
           <Icon as={<MaterialIcons name="chevron-right" />} size={8} />
         </TouchableOpacity>
       </Box>
@@ -99,7 +101,7 @@ const CustomDrawerItem = ({
       <Row justifyContent="space-between">
         <Row flex={8}>
           <Icon color="primary.500" flex={2} as={icon} size={7} />
-          <Text flex={8} ml={2} fontWeight="bold">
+          <Text flex={8} ml={2} fontFamily="ProductSans-Bold">
             {label}
           </Text>
         </Row>

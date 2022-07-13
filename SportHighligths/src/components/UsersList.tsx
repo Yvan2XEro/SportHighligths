@@ -8,6 +8,7 @@ import Spinner from './Spinner';
 import Alert from './Alert';
 import {AuthContext} from '../contexts/AuthContextProvider';
 import {paperTheme} from '../themes';
+import NoData from './NoData';
 
 const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
   const [fetching, setFetching] = React.useState(true);
@@ -54,9 +55,7 @@ const UsersList = ({url, emptyText}: {url: string; emptyText: string}) => {
       showsVerticalScrollIndicator={false}
       ListHeaderComponent={
         !fetching && users.length === 0 ? (
-          <Box m={3} flexShrink={1}>
-            <Alert status="warning" text={emptyText} />
-          </Box>
+          <NoData text={emptyText} />
         ) : undefined
       }
       refreshControl={
@@ -123,10 +122,10 @@ const UserItem = ({user}: {user: User}) => {
           <Avatar source={{uri: u.avatar}} />
         </Box>
         <Box mx={1} flex={1}>
-          <Text fontSize={17} fontWeight="bold">
+          <Text fontSize={17} fontFamily="ProductSans-Bold">
             {u.firstName} {u.lastName} {user.id === loggedUser.id && ' (vous)'}
           </Text>
-          <Text flexShrink={1}>
+          <Text flexShrink={1} fontFamily="ProductSans-Regular">
             Suivi par {numConverter(u.followersCount)} personnes(2 amis en
             communs)
           </Text>
@@ -139,7 +138,11 @@ const UserItem = ({user}: {user: User}) => {
             variant={u.followed ? 'outline' : 'solid'}
             onPress={handleFollow}
             fontWeight="bol">
-            {u.followed ? 'Unfollow' : `Follow`}
+            <Text
+              fontFamily="ProductSans-Regular"
+              color={!u.followed ? 'white' : 'primary.500'}>
+              {u.followed ? 'Unfollow' : `Follow`}
+            </Text>
           </Button>
         )}
       </Box>

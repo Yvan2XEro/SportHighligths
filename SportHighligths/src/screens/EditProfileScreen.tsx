@@ -33,6 +33,7 @@ import ImagesViewerContextProvider, {
 } from '../contexts/ImagesViewerContextProvider';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uniqueid} from '../services/utils';
+import {paperTheme} from '../themes';
 
 const EditProfileScreen = () => {
   const {user, fetchUser} = useContext(AuthContext) as {
@@ -94,34 +95,46 @@ const EditProfileScreen = () => {
         <Box h={100} backgroundColor="primary.500" />
         <AvatarWrapper onPress={onOpen} user={user} />
         <Box mt={10} px={3}>
-          <Text mt={5} textAlign="center" textTransform="uppercase">
+          <Text
+            mt={5}
+            textAlign="center"
+            textTransform="uppercase"
+            fontFamily="ProductSans-Bold">
             Informations personnelles
           </Text>
           <>
             <TextInput
+              labelColor={paperTheme.colors.text[600]}
               value={u.lastName}
               onChangeText={text => setU(u => ({...u, lastName: text}))}
               icon={<Ionicons name="person-outline" />}
               label="Nom:"
             />
             <TextInput
+              labelColor={paperTheme.colors.text[600]}
               value={u.firstName}
               onChangeText={text => setU(u => ({...u, firstName: text}))}
               icon={<Ionicons name="person-outline" />}
               label="Prenom:"
             />
             <TextInput
+              labelColor={paperTheme.colors.text[600]}
               value={u.email}
               onChangeText={text => setU(u => ({...u, email: text}))}
               icon={<Fontisto name="email" />}
               label="Adresse Email:"
             />
           </>
-          <Text mt={5} textAlign="center" textTransform="uppercase">
+          <Text
+            mt={5}
+            textAlign="center"
+            textTransform="uppercase"
+            fontFamily="ProductSans-Bold">
             Changer le mot de passe
           </Text>
           <>
             <TextInput
+              labelColor={paperTheme.colors.text[600]}
               icon={<MaterialCommunityIcons name="lock-outline" />}
               value={oldPassword}
               onChangeText={setOldPassword}
@@ -143,6 +156,7 @@ const EditProfileScreen = () => {
               label="Ancien mot de passe:"
             />
             <TextInput
+              labelColor={paperTheme.colors.text[600]}
               icon={<MaterialCommunityIcons name="lock-outline" />}
               value={newPassword}
               onChangeText={setNewPassword}
@@ -197,7 +211,7 @@ const Header = ({
         ml={2}
         fontSize="md"
         color="white"
-        fontWeight="bold"
+        fontFamily="ProductSans-Bold"
         textTransform="uppercase">
         editer le profile
       </Text>

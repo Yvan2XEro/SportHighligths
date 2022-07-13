@@ -111,7 +111,7 @@ export const Header = ({user}: {user: User}) => {
         <Text
           ml={1}
           fontSize="md"
-          fontWeight="bold"
+          fontFamily="ProductSans-Bold"
           textTransform="uppercase"
           color="white">
           {textSice(user.firstName + ' ' + user.lastName, 30)}

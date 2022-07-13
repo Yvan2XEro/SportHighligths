@@ -36,7 +36,7 @@ const UserInfos = ({
               textAlign="center">
               {numConverter(data?.publicationsCount)}
             </Text>
-            <Text color="white">
+            <Text color="white" fontFamily="ProductSans-Medium">
               {data?.publicationsCount !== 1 ? 'Publications' : 'Publication'}
             </Text>
           </Box>
@@ -50,7 +50,7 @@ const UserInfos = ({
               textAlign="center">
               {numConverter(data?.followersCount)}
             </Text>
-            <Text color="white">
+            <Text color="white" fontFamily="ProductSans-Medium">
               {data?.followersCount !== 1 ? 'Abonnés' : 'Abonné'}
             </Text>
           </Box>
@@ -64,7 +64,7 @@ const UserInfos = ({
               textAlign="center">
               {numConverter(data?.followingsCount)}
             </Text>
-            <Text color="white">
+            <Text color="white" fontFamily="ProductSans-Medium">
               {data?.followingsCount !== 1 ? 'Abonnements' : 'Abonnement'}
             </Text>
           </Box>
