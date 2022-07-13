@@ -9,18 +9,19 @@ import {
   Row,
   Text,
 } from 'native-base';
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {Dimensions} from 'react-native';
 import BackButton from '../components/BackButton';
 import ImagesViewerContextProvider, {
   ImagesViewerContext,
 } from '../contexts/ImagesViewerContextProvider';
-import {textSice} from '../services';
+import {http, textSice} from '../services';
 import {Highlight} from '../types';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HighlightDetailsScreen = () => {
-  const {data} = useRoute().params as {data: Highlight};
+  const {data: hl} = useRoute().params as {data: Highlight};
+  const [data, setData] = React.useState<Highlight>(hl);
   const {title, posts, description} = data;
   const [images, setImages] = React.useState<string[]>([]);
   useEffect(() => {
@@ -31,6 +32,16 @@ const HighlightDetailsScreen = () => {
       });
     });
   }, []);
+  const handleLike = useCallback(async () => {
+    if (!data.liked)
+      http.post(`/highligths/${data.id}/like`).then(res => {
+        setData({...data, liked: true, likesCount: data.likesCount + 1});
+      });
+    else
+      http.delete(`/highligths/${data.id}/like`).then(res => {
+        setData({...data, liked: false, likesCount: data.likesCount - 1});
+      });
+  }, [data]);
   return (
     <Box flex={1}>
       <Header title={textSice(title, 35)} />
@@ -55,10 +66,12 @@ const HighlightDetailsScreen = () => {
         <Pressable>
           <Row mt={10} alignItems="center">
             <Text fontFamily="ProductSans-Medium">Interessant?</Text>
+            <Text>({data.likesCount})</Text>
             <Icon
               color="primary.500"
               ml={2}
-              as={<SimpleLineIcons name="like" />}
+              onPress={handleLike}
+              as={<Ionicons name={data.liked ? 'heart' : 'heart-outline'} />}
               size={7}
             />
           </Row>

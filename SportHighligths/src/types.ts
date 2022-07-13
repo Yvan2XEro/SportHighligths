@@ -59,6 +59,7 @@ export type Highlight = {
   likesCount: number;
   title: string;
   description: string;
+  liked: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
