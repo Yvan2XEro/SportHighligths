@@ -1,8 +1,8 @@
 import { TokenRefreshRequest, applyAuthTokenInterceptor } from 'react-native-axios-jwt'
 import axios from 'axios'
 
-// export const BASE_URL = 'https://sporthighlighs-api.herokuapp.com'
-export const BASE_URL = 'http://192.168.52.69:8000'
+export const BASE_URL = 'https://sporthighlighs-api.herokuapp.com'
+//export const BASE_URL = 'http://192.168.52.69:8000'
 
 export const http = axios.create({ baseURL: BASE_URL })
 

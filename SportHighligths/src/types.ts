@@ -52,3 +52,13 @@ export type Comment = {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type Highlight = {
+  id: number;
+  posts: Post[];
+  likesCount: number;
+  title: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

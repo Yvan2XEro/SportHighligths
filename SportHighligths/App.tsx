@@ -12,6 +12,9 @@ import AuthStackNavigation from './src/navigations/AuthStackNavigation';
 import {Provider as ReduxProvider} from 'react-redux';
 import {ToastProvider} from 'react-native-toast-notifications';
 import {store} from './src/store';
+import {enableScreens} from 'react-native-screens';
+
+enableScreens();
 
 const App = () => {
   return (

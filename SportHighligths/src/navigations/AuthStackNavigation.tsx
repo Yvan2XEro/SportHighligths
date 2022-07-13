@@ -32,7 +32,6 @@ const LoadingScreen = () => {
     (async () => checkIfFirstTimeLoad())();
   }, []);
   const checkIfFirstTimeLoad = useCallback(async () => {
-    await localStorage.remove(FIRST_USE_KEY);
     const fu = await localStorage.get(FIRST_USE_KEY);
     if (fu === null) {
       navigation.navigate('WelcomeScreen' as never);

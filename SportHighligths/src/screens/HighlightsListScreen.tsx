@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ArticlesList from '../components/ArticlesList';
 import {Tabs, TabScreen} from 'react-native-paper-tabs';
-import {tabsTheme} from '../themes';
+import {paperTheme, tabsTheme} from '../themes';
 
 const HighlightsListScreen = () => {
   return (
@@ -13,15 +13,20 @@ const HighlightsListScreen = () => {
       <Box bgColor="primary.500" pb={2}>
         <Header />
       </Box>
-      <Tabs theme={tabsTheme}>
+      <Tabs
+        style={{
+          backgroundColor: paperTheme.colors.primary[500],
+          paddingTop: 5,
+        }}
+        theme={tabsTheme}>
         <TabScreen icon="star" label="Populaire">
           <Box mx={2}>
-            <ArticlesList />
+            <ArticlesList url="/highligths" />
           </Box>
         </TabScreen>
         <TabScreen label="Recommande">
           <Box mx={2}>
-            <ArticlesList />
+            <ArticlesList url="/highligths" />
           </Box>
         </TabScreen>
       </Tabs>

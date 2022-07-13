@@ -289,8 +289,13 @@ const ActionsHeader = ({navigation, onSearching, searching}: any) => {
                 as={<Ionicons name="menu-sharp" />}
               />
             </TouchableOpacity>
-            <Heading color="white" ml={1} size="md" textTransform="uppercase">
-              SportHightligths
+            <Heading
+              fontFamily="ProductSans-Bold"
+              color="white"
+              ml={1}
+              size="md"
+              textTransform="uppercase">
+              SportHighlights
             </Heading>
           </Row>
           <Row>

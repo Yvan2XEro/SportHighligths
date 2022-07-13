@@ -10,9 +10,7 @@ import {
   View,
 } from 'native-base';
 import React, {useContext, useEffect, useState} from 'react';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {TouchableOpacity} from 'react-native';
 import UserInfos from '../components/UserInfos';
 import {Tabs, TabScreen} from 'react-native-paper-tabs';
 import PostList from '../components/PostList';
