@@ -32,12 +32,11 @@ const LoadingScreen = () => {
     (async () => checkIfFirstTimeLoad())();
   }, []);
   const checkIfFirstTimeLoad = useCallback(async () => {
+    await localStorage.remove(FIRST_USE_KEY);
     const fu = await localStorage.get(FIRST_USE_KEY);
     if (fu === null) {
-      console.log('callledd1....................\n\n');
       navigation.navigate('WelcomeScreen' as never);
     } else {
-      console.log('callledd222....................\n\n');
       if (!isLoggedIn) navigation.navigate('LoginScreen' as never);
     }
   }, []);

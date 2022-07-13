@@ -9,37 +9,50 @@ import {
   Text,
 } from 'native-base';
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, ImageBackground} from 'react-native';
 import {onlyUnique} from '../services';
 import {paperTheme} from '../themes';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
+import Followers from '../assets/welcome/followers.svg';
+import Happy from '../assets/welcome/happy.svg';
+import Profile from '../assets/welcome/profile.svg';
+import Settings from '../assets/welcome/settings.svg';
+import SocialLife from '../assets/welcome/social_life.svg';
+import Team from '../assets/welcome/team.svg';
+
 export const FIRST_USE_KEY = 'FIRST_USE_KEY';
 const slides = [
   {
-    title: 'Screen 1',
-    text: 'Text for screen 1',
+    title: 'Vivez des moments inoubliables!',
+    text: 'Vous pouvez partager vos meilleurs moments avec vos amis.',
+    svg: <Team height={150} />,
   },
   {
-    title: 'Screen 2',
-    text: 'Text for screen 1',
+    title: 'Suivez vos equipes favorites!',
+    text: 'Retrouvez les meilleurs moments forts de tous les matchs concernants vos equipes favorites',
+    svg: <Happy height={150} />,
   },
   {
-    title: 'Screen 3',
-    text: 'Text for screen 1',
+    title: 'Reagiz sur les matchs!',
+    text: 'Vous pouvez donner votre avis sur les matchs de votre choix.',
+    svg: <SocialLife height={150} />,
   },
   {
-    title: 'Screen 4',
-    text: 'Text for screen 1',
+    title: 'Retrouvez vos amis!',
+    text: 'Vous pouvez retrouver des amis qui partagent les memes moments forts que vous  sur notre application.',
+    svg: <Followers height={150} />,
   },
   {
-    title: 'Screen 4',
-    text: 'Text for screen 1',
+    title: 'Personnalisez votre application!',
+    text: 'Vous pouvez personnaliser votre application pour vous adapter a vos besoins.',
+    svg: <Settings height={150} />,
   },
   {
-    title: 'Screen 4',
-    text: 'Text for screen 1',
+    title: 'Adaptez votre profil!',
+    text: "Vous pouvez adaptez votre profil afin d' avoir des meilleurs suggestions.",
+    svg: <Profile height={150} />,
   },
 ];
 const {width, height} = Dimensions.get('screen');
@@ -52,7 +65,11 @@ const WelcomeScreen = () => {
   return (
     <>
       <StatusBar hidden />
-      <Slides handleDone={handleDone} />
+      <ImageBackground
+        style={{flex: 1}}
+        source={require('../assets/BgAuth2.png')}>
+        <Slides handleDone={handleDone} />
+      </ImageBackground>
     </>
   );
 };
@@ -92,14 +109,20 @@ const Slides = ({handleDone}: ISlidesProps) => {
         ref={listRef}
         horizontal
         data={slides}
+        showsHorizontalScrollIndicator={false}
         pagingEnabled
         keyExtractor={(_, i) => i + ''}
         onViewableItemsChanged={onViewableItemsChanged.current}
         renderItem={({item}) => {
           return (
             <Center w={width} h={height}>
-              <Text fontSize="3xl">{item.title}</Text>
-              <Text fontSize="xl">{item.text}</Text>
+              {item.svg}
+              <Text textAlign="center" color="gray.300" fontSize="3xl">
+                {item.title}
+              </Text>
+              <Text mt={2} textAlign="center" color="gray.400" fontSize="xl">
+                {item.text}
+              </Text>
             </Center>
           );
         }}
@@ -118,16 +141,16 @@ const Slides = ({handleDone}: ISlidesProps) => {
           alignItems="center"
           p={2}
           onPress={() => handleNext()}>
-          <Text>Suivant</Text>
+          <Text color="white">Suivant</Text>
           <Icon
-            color="black"
+            color="white"
             as={<MaterialIcons name="chevron-right" />}
             size={6}
           />
         </Pressable>
         {currentSlide !== slides.length - 1 ? (
           <Pressable onPress={() => handleSkip()} p={2}>
-            <Text>Passer</Text>
+            <Text color="white">Passer</Text>
           </Pressable>
         ) : (
           <Pressable
